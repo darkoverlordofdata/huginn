@@ -1,0 +1,3 @@
+# Hugin
+
+pronounced "HOO-gin"
