@@ -11,12 +11,12 @@
 #|
 #+--------------------------------------------------------------------+
 #
-# The standard include tag, but it looks in the _include folder
+# The standard include tag, but it looks in the #{source}\_includes folder
 #
 
 path = require('path')
-util = require('./../util.coffee')
-_config = util.config()
+hugin = require('./../hugin.coffee')
+_config = hugin.config()
 _dir = path.resolve(__dirname, '../..', _config.source, '_includes')+'/'
 
 ignore = "ignore"
@@ -25,8 +25,12 @@ only = "only"
 
 module.exports =
 
-  ends: false # no end tag
+  tag: 'include'  # {% include %}
+  ends: false     # no end tag
 
+  #
+  # build the executable
+  #
   compile: (compiler, args) ->
     file = args.shift().replace('"', "\"#{_dir}")
     onlyIdx = args.indexOf(only)
@@ -36,6 +40,9 @@ module.exports =
     w = args.join("")
     ((if ignore then "  try {\n" else "")) + "_output += _swig.compileFile(" + file + ", {" + "resolveFrom: \"" + parentFile + "\"" + "})(" + ((if (onlyCtx and w) then w else ((if not w then "_ctx" else "_utils.extend({}, _ctx, " + w + ")")))) + ");\n" + ((if ignore then "} catch (e) {}\n" else ""))
 
+  #
+  # build the tag
+  #
   parse: (str, line, parser, types, stack, opts) ->
     file = undefined
     w = undefined

@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| util.coffee
+#| hugin.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -21,6 +21,7 @@ swig = require('swig')
 _fm = /^---[\n]+(?:\w+\s*:\s*\w+\s*[\n])*---[\n]/
 
 _config = null
+_plugins = []
 _paginator = {}
 _page = {}
 _site =
@@ -64,6 +65,7 @@ _get_config = ->
     null
 
 _site = Object.create(_get_config(), _site)
+_source = path.resolve(__dirname, '..', _get_config().source)
 
 
 module.exports =
@@ -113,10 +115,39 @@ module.exports =
 
     _page.content = $buf
 
-    if $use_fm
-      $buf = swig.render($buf, filename: $file, locals: page: _page, site: _site, paginator: _paginator)
+    for $plugin in _plugins
+      $plugin.generate _page, _site, _paginator
+
+    $buf = swig.render($buf, filename: $file, locals: page: _page, site: _site, paginator: _paginator)
+    if _page.layout?
+      $layout = "#{_source}/_layouts/#{_page.layout}.html"
+      $buf =  swig.renderFile($layout, locals: content: $buf, page: _page, site: _site, paginator: _paginator)
 
     fs.writeFileSync "#{$dst}/#{$folder}/#{$tpl}", $buf
 
-# load core plugins
-plugin = require('./plugin')
+#
+# load core plugins:
+#
+#   Filters
+#
+for $name, $function of require("#{__dirname}/filters")
+  swig.setFilter $name, $function
+#
+#   Tags
+#
+for $name in fs.readdirSync("#{__dirname}/tags")
+
+  $tag = require("#{__dirname}/tags/#{$name}")
+  swig.setTag $tag.tag, $tag.parse, $tag.compile, $tag.ends
+
+#
+#   User plugins
+#
+for $name in fs.readdirSync("#{_source}/_plugins")
+  $plugin = require("#{_source}/_plugins/#{$name}")
+  _plugins.push $plugin if $plugin.generate?
+  if $plugin.tag?
+    swig.setTag $plugin.tag, $plugin.parse, $plugin.compile, $plugin.ends
+  else if $plugin.filter?
+    swig.setFilter $plugin.filter, $plugin.func
+

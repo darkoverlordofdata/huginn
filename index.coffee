@@ -13,7 +13,7 @@
 #
 fs = require('fs')
 path = require('path')
-util = require('./lib/util')
+util = require('./lib/hugin')
 
 _src  = ''  # source folder
 _dst  = ''  # destination folder

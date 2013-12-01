@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| plugin.coffee
+#| filters.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -11,9 +11,8 @@
 #|
 #+--------------------------------------------------------------------+
 #
-fs = require('fs')
-path = require('path')
-swig = require('swig')
+# Filters for Liquid Compatability
+#
 
 _month_short = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'
@@ -24,10 +23,7 @@ _month_long = [
   'July', 'August', 'September', 'October', 'November', 'Decenber'
 ]
 
-#
-# Liquid Compatability
-#
-_filters = 
+module.exports =
   date_to_xmlschema: ($input) ->
     $input.toISOString()
   
@@ -73,11 +69,3 @@ _filters =
   jsonify: ($input) ->
     JSON.stringify($input)
 
-for $name, $function of _filters
-  swig.setFilter $name, $function
-
-for $name in fs.readdirSync("#{__dirname}/tags")
-
-  $name = path.basename($name, path.extname($name))
-  $tag = require("./tags/#{$name}")
-  swig.setTag $name, $tag.parse, $tag.compile, $tag.ends

@@ -18,7 +18,8 @@
 
 module.exports =
 
-  ends: true # has end tag!
+  tag: 'for'      # {% for %}
+  ends: true      # {% endfor %}
 
   #
   # build the executable
