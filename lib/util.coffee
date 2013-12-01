@@ -16,6 +16,8 @@ path = require('path')
 yaml = require('yaml-js')
 swig = require('swig')
 
+
+
 _fm = /^---[\n]+(?:\w+\s*:\s*\w+\s*[\n])*---[\n]/
 
 _config = null
@@ -61,63 +63,7 @@ _get_config = ->
   else
     null
 
-_month_short = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-]
-_month_long = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-]
 _site = Object.create(_get_config(), _site)
-
-#
-# Setup Liquid Conpatability
-#
-swig.setFilter 'date_to_xmlschema', ($input) ->
-  $input.toISOString()
-
-swig.setFilter 'date_to_rfc822', ($input) ->
-  $input.toUTCString()
-
-swig.setFilter 'date_to_string', ($input) ->
-  $input.getDate()+' '+_month_short[$input.getMonth()]+' '+$input.getFullYear()
-
-swig.setFilter 'date_to_long_string', ($input) ->
-  $input.getDate()+' '+_month_long[$input.getMonth()]+' '+$input.getFullYear()
-
-swig.setFilter 'xml_escape', ($input) ->
-  escape($input)
-
-swig.setFilter 'cgi_escape', ($input) ->
-  escape($input)
-
-swig.setFilter 'uri_escape', ($input) ->
-  encodeURI($input)
-
-swig.setFilter 'number_of_words', ($input) ->
-  if ($match = $input.match(_word_count))
-    $match.length
-  else
-    0
-
-swig.setFilter 'array_to_sentence_string', ($input) ->
-  switch $input.length
-    when 0 then ''
-    when 1 then $input[0]
-    when 2 then "#{$input[0]} and #{$input[1]}"
-    else
-      $last = $input.pop()
-      $input.join(', ')+', and '+$last
-
-swig.setFilter 'textilize', ($input) ->
-  textile($input)
-
-swig.setFilter 'markdownify', ($input) ->
-  md($input)
-
-swig.setFilter 'jsonify', ($input) ->
-  JSON.stringify($input)
 
 
 module.exports =
@@ -152,8 +98,9 @@ module.exports =
       tags: []
       path: ''
 
+    $file = path.resolve("#{$src}/#{$folder}/#{$tpl}")
     $use_fm = false
-    $buf = String(fs.readFileSync("#{$src}/#{$folder}/#{$tpl}"))
+    $buf = String(fs.readFileSync($file))
     #
     # Load page[] with front-matter
     #
@@ -167,10 +114,9 @@ module.exports =
     _page.content = $buf
 
     if $use_fm
-      console.log "SWIG: "+$folder+'/'+$tpl
-      $buf = swig.render($buf, locals: page: _page, site: _site, paginator: _paginator)
-
+      $buf = swig.render($buf, filename: $file, locals: page: _page, site: _site, paginator: _paginator)
 
     fs.writeFileSync "#{$dst}/#{$folder}/#{$tpl}", $buf
 
-
+# load core plugins
+plugin = require('./plugin')
