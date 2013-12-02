@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| index.coffee
+#| tag_cloud.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -11,5 +11,18 @@
 #|
 #+--------------------------------------------------------------------+
 #
-require('./lib/hugin').main()
+# tag cloud hugin-plugin
+#
+_generated = false
 
+module.exports =
+
+  name: 'tag_cloud'   # {{ site | tag_cloud }}
+
+  generate: ->
+    return if _generated
+    _generated = true
+
+  filter: ($site) ->
+
+    return 'tag cloud'

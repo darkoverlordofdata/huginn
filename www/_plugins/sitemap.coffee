@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| index.coffee
+#| sitemap.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -11,5 +11,23 @@
 #|
 #+--------------------------------------------------------------------+
 #
-require('./lib/hugin').main()
+# sitemap hugin-plugin
+#
+_site = null
+_generated = false
 
+module.exports =
+
+  name: 'sitemap'   # {{ site | tag_cloud }}
+
+  #
+  # Connect to the site
+  # grab some configuration values
+  #
+  connect: ($site) ->
+
+    _site = $site
+
+  generate: ->
+    return if _generated
+    _generated = true

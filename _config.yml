@@ -1,6 +1,7 @@
 name: "dark overlord of data"
 description: "if it's not dark, it's not data"
 
+test: [1,2,3,4]
 disqus: d16a
 source: ./www
 destination: ./public
@@ -22,9 +23,9 @@ asset_bundler:
     js: false
     css: false
   base_path: /assets/
-  server_url:
+  server_url: //cdn.darkoverlordofdata.com/
   remove_bundled: false
-  dev: false
+  dev: true
   markup_templates:
     js: "<script type='text/javascript' src='{{url}}'></script>\n"
     css: "<link rel='stylesheet' type='text/css' href='{{url}}' />\n"

@@ -4,7 +4,7 @@ active: home
 ---
 
 {% for post in site.posts %}
-{% if forloop.first %}
+{% if loop.first %}
         <h1>{{ post.title }}</h1>
         <p class="muted">{{ post.date | date_to_long_string }}</p>
 

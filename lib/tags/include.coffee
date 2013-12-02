@@ -16,8 +16,7 @@
 
 path = require('path')
 hugin = require('./../hugin.coffee')
-_config = hugin.config()
-_dir = path.resolve(__dirname, '../..', _config.source, '_includes')+'/'
+_dir = ''
 
 ignore = "ignore"
 missing = "missing"
@@ -27,6 +26,9 @@ module.exports =
 
   tag: 'include'  # {% include %}
   ends: false     # no end tag
+
+  connect: ($site) ->
+    _dir = path.resolve(__dirname, '../..', $site.source, '_includes')+'/'
 
   #
   # build the executable
@@ -39,7 +41,6 @@ module.exports =
     ignore = (if args[args.length - 1] is missing then (args.pop()) else false)
     w = args.join("")
     ((if ignore then "  try {\n" else "")) + "_output += _swig.compileFile(" + file + ", {" + "resolveFrom: \"" + parentFile + "\"" + "})(" + ((if (onlyCtx and w) then w else ((if not w then "_ctx" else "_utils.extend({}, _ctx, " + w + ")")))) + ");\n" + ((if ignore then "} catch (e) {}\n" else ""))
-
   #
   # build the tag
   #

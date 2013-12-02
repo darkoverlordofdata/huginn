@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| hugin.coffee
+#| coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -16,138 +16,259 @@ path = require('path')
 yaml = require('yaml-js')
 swig = require('swig')
 
-
-
-_fm = /^---[\n]+(?:\w+\s*:\s*\w+\s*[\n])*---[\n]/
-
 _config = null
 _plugins = []
 _paginator = {}
 _page = {}
-_site =
-  time:
-    writable: false, value: (new Date()).getTime()
-  pages:
-    writable: false, value: []
-  posts:
-    writable: false, value: []
-  related_posts:
-    writable: false, value: []
-  categories:
-    writable: false, value: []
-  tags:
-    writable: false, value: []
+_site = {}
 
+#
+# Generate pages
+#
+# @param  [String]  tpl template
+# @param  [String]  folder  subfolder
+# @return none
+#
+_pages = ($tpl, $folder = '') ->
+
+  $src = path.normalize("#{_site.source}/#{$folder}/#{$tpl}")
+  $dst = path.normalize("#{_site.destination}/#{$folder}/#{$tpl}")
+
+  $stats = fs.statSync($src)
+
+  if $stats.isDirectory()
+
+    fs.mkdirSync $dst unless fs.existsSync($dst)
+    for $f in fs.readdirSync($src)
+      _pages $f, "#{$folder}/#{$tpl}"
+
+  else if $stats.isFile()
+    console.log $src
+    _generate $src, $dst
 
 
 #
-# resolve the path
+# Load pages data
 #
-# @return [Object] the path
+# @param  [String]  tpl template
+# @param  [String]  folder  subfolder
+# @return none
 #
-_path = ($path) ->
-  path.resolve(__dirname,'..', $path)
+_load_pages = ($tpl, $folder = '') ->
+
+  $src = path.normalize("#{_site.source}/#{$folder}/#{$tpl}")
+  $stats = fs.statSync($src)
+
+  if $stats.isDirectory()
+    for $f in fs.readdirSync($src)
+      _load_pages $f, "#{$folder}/#{$tpl}"
+
+  else if $stats.isFile()
+    if path.extname($src) in ['.html']
+      _site.pages.push _load($src)
 
 
 #
-# Get the configuration
+# Generate a post from template
 #
-# @return [Object] the Config object
+# @param  [String]  tpl template
+# @return none
 #
-_get_config = ->
-  if fs.existsSync(_path('config.js'))
-    require(_path('config.js'))
-  else if fs.existsSync(_path('config.coffee'))
-    require(_path('config.coffee'))
-  else if fs.existsSync(_path('_config.yml'))
-    yaml.load(fs.readFileSync(_path('_config.yml')))
-  else
-    null
+_post = ($tpl) ->
+  $seg = $tpl.split('-')
+  $yy = $seg.shift()
+  $mm = $seg.shift()
+  $dd = $seg.shift()
+  $link = $seg.join('-')
 
-_site = Object.create(_get_config(), _site)
-_source = path.resolve(__dirname, '..', _get_config().source)
+  fs.mkdirSync "#{_site.destination}/#{$yy}" unless fs.existsSync("#{_site.destination}/#{$yy}")
+  fs.mkdirSync "#{_site.destination}/#{$yy}/#{$mm}" unless fs.existsSync("#{_site.destination}/#{$yy}/#{$mm}")
+  fs.mkdirSync "#{_site.destination}/#{$yy}/#{$mm}/#{$dd}" unless fs.existsSync("#{_site.destination}/#{$yy}/#{$mm}/#{$dd}")
+
+  $src = path.normalize("#{_site.source}/_posts/#{$tpl}")
+  $dst = path.normalize("#{_site.destination}/#{$yy}/#{$mm}/#{$dd}/#{$link}")
+
+  _generate $src, $dst
+
+#
+# Load post data
+#
+# @param  [String]  tpl template
+# @return none
+#
+_load_post = ($tpl) ->
+  $src = path.normalize("#{_site.source}/_posts/#{$tpl}")
+  _site.posts.push _load($src)
+
+
+#
+# Generate a page from a template
+#
+# @param  [String]  template
+# @param  [String]  page
+# @return none
+#
+_generate = ($template, $page) ->
+
+  $fm = null
+  $buf = String(fs.readFileSync($template))
+  if $buf[0..3] is '---\n'
+    # pull out the front matter and parse with yaml
+    $buf = $buf.split('---\n')
+    $fm = yaml.load($buf[1])
+    $buf = $buf[2]
+
+
+  _page =
+    content: ''
+    title: ''
+    excerpt: ''
+    url: ''
+    date: ''
+    id: ''
+    categories: []
+    tags: []
+    path: ''
+    content: $buf
+  for $key, $val of $fm
+    _page[$key] = $val
+
+  $buf = swig.render($buf, filename: $template, locals: page: _page, site: _site, paginator: _paginator, test: [1,2,3])
+  if _page.layout?
+    $layout = "#{_site.source}/_layouts/#{_page.layout}.html"
+    $buf =  swig.renderFile($layout, content: $buf, page: _page, site: _site, paginator: _paginator)
+
+  fs.writeFileSync $page, $buf
+
+#
+# Load page/post data
+#
+# @param  [String]  template
+# @param  [String]  page
+# @return none
+#
+_load = ($template) ->
+
+  $fm = null
+  $buf = String(fs.readFileSync($template))
+  if $buf[0..3] is '---\n'
+    # pull out the front matter and parse with yaml
+    $buf = $buf.split('---\n')
+    $fm = yaml.load($buf[1])
+    $buf = $buf[2]
+
+
+  _page =
+    content: ''
+    title: ''
+    excerpt: ''
+    url: ''
+    date: ''
+    id: ''
+    categories: []
+    tags: []
+    path: ''
+    content: $buf
+  for $key, $val of $fm
+    _page[$key] = $val
+  _page
 
 
 module.exports =
-
   #
-  # Get the configuration
+  # Generate a site
   #
-  # @return [Object] the Config object
-  #
-  config: ->
-    _config = _config ? _get_config()
-
-  #
-  # Generate items from template
-  #
-  # @param  [String]  src source root
-  # @param  [String]  dst destination root
-  # @param  [String]  tpl template
-  # @param  [String]  folder  subfolder
   # @return none
   #
-  generate: ($src, $dst, $folder, $tpl) ->
+  main: ($cfg = '_config.yml') ->
 
-    _page =
-      content: ''
-      title: ''
-      excerpt: ''
-      url: ''
-      date: ''
-      id: ''
-      categories: []
-      tags: []
-      path: ''
-
-    $file = path.resolve("#{$src}/#{$folder}/#{$tpl}")
-    $use_fm = false
-    $buf = String(fs.readFileSync($file))
+    swig.setDefaults autoescape:false
     #
-    # Load page[] with front-matter
+    # Get the configuration
     #
-    if ($front = $buf.match(_fm))?
-      $use_fm = true
-      $buf = $buf.replace(_fm, '')
-      for $var in $front[0].split("\n").slice(1,-2)
-        $a = $var.split(/\s*:\s*/)
-        _page[$a[0]] = $a[1]
+    $root = path.resolve(__dirname,'..')
+    if fs.existsSync("#{$root}/#{$cfg}")
+      $config = yaml.load(fs.readFileSync("#{$root}/#{$cfg}"))
+    else
+      process.exit console.log("Hugin config file #{$cfg} NOT found")
 
-    _page.content = $buf
+    if not fs.existsSync($config.source)
+      process.exit console.log("No source dir")
 
-    for $plugin in _plugins
-      $plugin.generate _page, _site, _paginator
 
-    $buf = swig.render($buf, filename: $file, locals: page: _page, site: _site, paginator: _paginator)
-    if _page.layout?
-      $layout = "#{_source}/_layouts/#{_page.layout}.html"
-      $buf =  swig.renderFile($layout, locals: content: $buf, page: _page, site: _site, paginator: _paginator)
+    #
+    # Inialize the site object with configuration
+    #
+    _site =
+      time:
+        writable: false, value: (new Date()).getTime()
+      pages:
+        writable: false, value: []
+      posts:
+        writable: false, value: []
+      related_posts:
+        writable: false, value: []
+      categories:
+        writable: false, value: []
+      tags:
+        writable: false, value: []
+      source:
+        writable: false, value: path.resolve(__dirname, '..', $config.source)
+      destination:
+        writable: false, value: path.resolve(__dirname, '..', $config.destination)
 
-    fs.writeFileSync "#{$dst}/#{$folder}/#{$tpl}", $buf
+    _site = Object.create($config, _site)
 
-#
-# load core plugins:
-#
-#   Filters
-#
-for $name, $function of require("#{__dirname}/filters")
-  swig.setFilter $name, $function
-#
-#   Tags
-#
-for $name in fs.readdirSync("#{__dirname}/tags")
+    #
+    # load core plugins:
+    #
+    #   Filters
+    #
+    for $name, $function of require("#{__dirname}/filters")
+      swig.setFilter $name, $function
+    #
+    #   Tags
+    #
+    for $name in fs.readdirSync("#{__dirname}/tags")
+      $tag = require("#{__dirname}/tags/#{$name}")
+      $tag.connect? _site
+      swig.setTag $tag.tag, $tag.parse, $tag.compile, $tag.ends
 
-  $tag = require("#{__dirname}/tags/#{$name}")
-  swig.setTag $tag.tag, $tag.parse, $tag.compile, $tag.ends
+    #
+    #   User plugins
+    #
+    for $name in fs.readdirSync("#{_site.source}/_plugins")
+      $plugin = require("#{_site.source}/_plugins/#{$name}")
 
-#
-#   User plugins
-#
-for $name in fs.readdirSync("#{_source}/_plugins")
-  $plugin = require("#{_source}/_plugins/#{$name}")
-  _plugins.push $plugin if $plugin.generate?
-  if $plugin.tag?
-    swig.setTag $plugin.tag, $plugin.parse, $plugin.compile, $plugin.ends
-  else if $plugin.filter?
-    swig.setFilter $plugin.filter, $plugin.func
+      _plugins.push $plugin
+      $plugin.connect? _site
+      $plugin.generate?()
+      if $plugin.tag?
+        swig.setTag $plugin.tag, $plugin.parse, $plugin.compile, $plugin.ends
+      else if $plugin.filter?
+        swig.setFilter $plugin.name, $plugin.filter
 
+    fs.mkdirSync _site.destination unless fs.existsSync(_site.destination)
+
+    #
+    # pre-load post data
+    #
+    for $f in fs.readdirSync("#{_site.source}/_posts")
+      _load_post $f
+
+    #
+    # pre-load page data
+    #
+    for $f in fs.readdirSync(_site.source)
+      _load_pages $f unless $f[0] is '_'    #
+
+    # process all posts
+    #
+    for $f in fs.readdirSync("#{_site.source}/_posts")
+      _post $f
+
+    #
+    # process all pages
+    #
+    for $f in fs.readdirSync(_site.source)
+      _pages $f unless $f[0] is '_'

@@ -34,6 +34,9 @@ module.exports =
     $input.getDate()+' '+_month_short[$input.getMonth()]+' '+$input.getFullYear()
   
   date_to_long_string: ($input) ->
+    return Date()
+    if $input is '' then $input = Date()
+    $input = new Date($input)
     $input.getDate()+' '+_month_long[$input.getMonth()]+' '+$input.getFullYear()
   
   xml_escape: ($input) ->
