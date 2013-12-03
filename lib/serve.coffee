@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| hugin.coffee
+#| create.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -11,19 +11,23 @@
 #|
 #+--------------------------------------------------------------------+
 #
-# hugin command dispatch
+fs = require('fs')
+path = require('path')
+yaml = require('yaml-js')
+swig = require('swig')
+
+_config = null
+_plugins = []
+_paginator = {}
+_page = {}
+_site = {}
+
+module.exports =
 #
+# create a new project
+#
+# @param  [String]  cfg alternate config file name
+# @return none
+#
+  run: ($args) ->
 
-Object.defineProperties module.exports,
-
-  build:  # generate the site
-    get: ->
-      require('./build.coffee').run
-
-  create: # create a new project
-    get: ->
-      require('./create.coffee').run
-
-  serve:  # serve the site
-    get: ->
-      require('./serve.coffee').run

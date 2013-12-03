@@ -6,42 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
-    <link rel='stylesheet' type='text/css' href='/assets/fonts.css' />
-<link rel='stylesheet' type='text/css' href='/assets/bootstrap.min.css' />
-<link rel='stylesheet' type='text/css' href='/assets/site.css' />
-<link rel='stylesheet' type='text/css' href='/assets/bootstrap-responsive.css' />
-
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!-- Fav and touch icons -->
-    <!--<link href="//cdn.darkoverlordofdata.com/ico/apple-touch-icon-144-precomposed.png" rel="apple-touch-icon-precomposed" sizes="144x144">-->
-    <!--<link href="//cdn.darkoverlordofdata.com/ico/apple-touch-icon-114-precomposed.png" rel="apple-touch-icon-precomposed" sizes="114x114">-->
-    <!--<link href="//cdn.darkoverlordofdata.com/ico/apple-touch-icon-72-precomposed.png" rel="apple-touch-icon-precomposed" sizes="72x72">-->
-    <!--<link href="//cdn.darkoverlordofdata.com/ico/apple-touch-icon-57-precomposed.png" rel="apple-touch-icon-precomposed">-->
-    <!--<link href="//cdn.darkoverlordofdata.com/ico/favicon.png" rel="shortcut icon" type="image/png">-->
-    <!-- Google Analytics Code -->
+    <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap.min.css' type='text/css'/>
+    <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap-responsive.min.css' type='text/css'/>
     <link href="/favicon.png" rel="shortcut icon" type="image/png">
-    <script type="text/javascript">
-
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', "UA-41153554-1"]);
-        _gaq.push(['_setDomainName', 'darkoverlordofdata.com']);
-        _gaq.push(['_trackPageview']);
-
-        (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
-
-    </script>
-    <!-- End Google Analytics Code -->
 </head>
-
 <body>
 <div class="row-fluid">
     <div class="span10">
@@ -50,126 +18,29 @@
         </blockquote>
     </div>
 </div>
-
 <div class="container-narrow">
-
 <div class="row-fluid">
     <div class="span12">
         
 
-
-        <h1>Installing XAMPP and Joomla on Xubuntu 11.10</h1>
-        <p class="muted">Mon Dec 02 2013 00:03:59 GMT-0800 (PST)</p>
-
-        
-<p>I'm evaluating CiviCRM, a contact relationship manager which is installed as a module in either Joomla or Drupal. </p>
-<p></p>
-<p>I could install Apache web server in Ubuntu by using apt-get, but then I will have little control over the versions of software installed, so I'm starting with a custom install of XAMPP. Visit </p><a href="http://www.apachefriends.org/en/xampp-linux.html" >http://www.apachefriends.org/en/xampp-linux.html</a><p>, and download the the latest version of software. Then open a console shell and enter:</p>
-<code><pre>
-sudo tar xvfz ~/Downloads/xampp-linux-1.7.7.tar.gz -C /opt</pre></code>
-<p> That's it. I also made the following changes to the /opt/lampp/etc/php.ini file:</p>
-<code><pre>
-display_errors = Off display_startup_errors = Off output_buffering = Off</pre></code>
-<div>
-    <p>These 'production' settings are recommended by the Joomla install process and prevent warning messages from displaying all over your web pages. Now start XAMPP: </p>
-    <code><pre>
-sudo /opt/lampp/lampp start</pre></code>
-    <p>Test your installation by pointing your browser to localhost. </p></div>
-<div>
-    <p></p>
-    <p>Now to install Joomla, visit joomla.org, and download the latest version. Because I don't know Joomla I'm going to create two sites - a reference site named joomla_demo, and a working site named joomla_crm</p>
-    <code><pre>
-sudo mkdir /opt/lampp/htdocs/joomla_demo
-sudo unzip ~/Downloads/Joomla_1.7.3-Stable-Full_Package.zip -d /opt/lampp/htdocs/joomla_demo
-sudo chmod -R 755 /opt/lampp/htdocs/joomla_demo
-sudo chown -R nobody:nogroup /opt/lampp/htdocs/joomla_demo
-sudo mkdir /opt/lampp/htdocs/joomla_crm
-sudo unzip ~/Downloads/Joomla_1.7.3-Stable-Full_Package.zip -d /opt/lampp/htdocs/joomla_crm
-sudo chmod -R 755 /opt/lampp/htdocs/joomla_crm
-sudo chown -R nobody:nogroup /opt/lampp/htdocs/joomla_crm</pre></code>
-    <p>Now, browse to localhost/joomla_crm, and follow the installation instructions. For database name, I entered 'joomla', and for prefix, I entered 'crm_'. Note that I could also have used 2 separate databases.</p>
-    <p>To install CicivCRM, I enter my joomla_crm site as administrator, and select Extension Manager. The instructions are to enter the sourceforge url into the Install URL field. But sourceforge doesn't cooperate. Instead, I install if from my own local web server:</p>
-    <code><pre>
-sudo cp ~/Downloads/civicrm-4.0.8-joomla.zip /opt/lampp/htdocs</pre></code>
-    <p>Now, for Install URL, enter <a href="http://localhost/civicrm-4.0.8-joomla.zip">http://localhost/civicrm-4.0.8-joomla.zip</a>
-    And the install is successful. Next, I'll create my evaluation sites for Drupal. </p>
-    
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="row-fluid">
-    <div class="span6">
-        <h3>Recent Posts</h3>
-<ul>
-    
-    
-        <li><a href="">Installing XAMPP and Joomla on Xubuntu 11.10</a></li>
-    
-    
-    
-        <li><a href="">LAMP stacks on Xubuntu 11.10</a></li>
-    
-    
-    
-        <li><a href="">Installing XAMPP and Drupal on Xubuntu 11.10</a></li>
-    
-    
-    
-        <li><a href="">I'm Back</a></li>
-    
-    
-    
-        <li><a href="">Exspresso</a></li>
-    
-    
-    
-    
-    
-    
-    
-    
-</ul>
-
-
-    </div>
-    <div class="span6">
+        <h1>Hugin</h1>
+        <p class="muted">Mon Dec 02 2013 19:54:35 GMT-0800 (PST)</p>
         <p>
-<div id="tag-cloud">
-    <div>tag cloud</div>
-</div>
+    pronounced "HOO-gin"
 </p>
-    </div>
-</div>
-<p><a href="/blog">more...</a></p>
+<p>
+    Hugin is a static page generator.
+</p>
+<p>
+  "On, Hekyll! On, Jekyll! On Hugin and Munin!"
+</p>
 
 
     </div>
 </div>
-
-
 <hr />
-<p></p>
-<p>Projects by Dark Overlord of Data</p>
-<p><a href="/katra">Katra</a> BASIC language interpreter in CoffeeScript</p>
-<p><a href="http://expresso.darkoverlordofdata.com">Exspresso</a> A CoffeeScript MVC Web Framework</p>
 </div>
-<script type='text/javascript' src='/assets/jquery-2.0.2.min.js'></script>
-<script type='text/javascript' src='/assets/bootstrap.min.js'></script>
-
+<script type="text/javascript" src="//cdn.darkoverlordofdata.com/js/jquery-2.0.2.min.js" ></script>
+<script type="text/javascript" src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js" ></script>
 </body>
 </html>

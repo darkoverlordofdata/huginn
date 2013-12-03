@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| hugin.coffee
+#| post_url.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -11,19 +11,26 @@
 #|
 #+--------------------------------------------------------------------+
 #
-# hugin command dispatch
+# post_url tag
 #
 
-Object.defineProperties module.exports,
+_site = null
 
-  build:  # generate the site
-    get: ->
-      require('./build.coffee').run
+module.exports =
 
-  create: # create a new project
-    get: ->
-      require('./create.coffee').run
+  tag: 'post_url'   # {% post_url %}
+  ends: false       # no end tag
 
-  serve:  # serve the site
-    get: ->
-      require('./serve.coffee').run
+  connect: ($site) ->
+    _site = $site
+
+  #
+  # build the executable
+  #
+  compile: (compiler, args) ->
+    ''
+  #
+  # build the tag
+  #
+  parse: (str, line, parser, types, stack, opts) ->
+    true

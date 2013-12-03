@@ -1,7 +1,6 @@
 name: "dark overlord of data"
 description: "if it's not dark, it's not data"
 
-test: [1,2,3,4]
 disqus: d16a
 source: ./www
 destination: ./public

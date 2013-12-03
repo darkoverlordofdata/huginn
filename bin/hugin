@@ -12,4 +12,15 @@
 #|
 #+--------------------------------------------------------------------+
 #
-hugin   = require("../index")
+hugin = require("../lib/hugin")
+
+switch process.argv[2]
+
+  when 'create' then hugin.create process.argv.slice(3)...
+
+  when 'build' then hugin.build process.argv.slice(3)
+
+  when 'serve' then hugin.serve process.argv.slice(3)
+
+  else console.log "ERR: Unknown command #{process.argv[2]}"
+
