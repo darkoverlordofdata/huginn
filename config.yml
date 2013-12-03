@@ -19,12 +19,12 @@ pygments: true
 
 asset_bundler:
   compress:
-    js: false
-    css: false
+    js: true
+    css: true
   base_path: /assets/
   server_url: //cdn.darkoverlordofdata.com/
   remove_bundled: false
-  dev: true
+  dev: false
   markup_templates:
     js: "<script type='text/javascript' src='{{url}}'></script>\n"
     css: "<link rel='stylesheet' type='text/css' href='{{url}}' />\n"

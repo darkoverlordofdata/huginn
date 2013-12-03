@@ -16,11 +16,9 @@ path = require('path')
 yaml = require('yaml-js')
 swig = require('swig')
 
-_config = null
-_plugins = []
-_paginator = {}
-_page = {}
-_site = {}
+_site       = {}
+_paginator  = {}
+_plugins    = []
 
 
 module.exports =
@@ -128,7 +126,7 @@ module.exports =
       _generate_pages $file unless $file[0] is '_'#
 
   url: ($path) ->
-    _get_url($path)
+    _post_url($path)
 
 # Generate pages
 #
@@ -226,7 +224,13 @@ _load_data = ($path) ->
     else console.log "WARN: Unknown data format: #{$path}"
 
 
-_get_url = ($template) ->
+#
+# Generate a post url from a template path
+#
+# @param  [String]  path  template file path
+# @return none
+#
+_post_url = ($template) ->
 
   if $template.indexOf(_site.source) is 0
     $template = $template.substr(_site.source.length)
@@ -259,7 +263,7 @@ _get_url = ($template) ->
 # @param  [String]  page
 # @return none
 #
-_generate = ($template, $page) ->
+_generate = ($template, $path) ->
 
   $buf = String(fs.readFileSync($template))
 
@@ -273,11 +277,11 @@ _generate = ($template, $page) ->
       $buf = $buf[2]
 
 
-    _page =
+    $page =
       content: ''
       title: ''
       excerpt: ''
-      url: _get_url($template)
+      url: _post_url($template)
       date: ''
       id: ''
       categories: []
@@ -285,14 +289,14 @@ _generate = ($template, $page) ->
       path: ''
       content: $buf
     for $key, $val of $fm
-      _page[$key] = $val
+      $page[$key] = $val
 
-    $buf = swig.render($buf, filename: $template, locals: page: _page, site: _site, paginator: _paginator, test: [1,2,3])
-    if _page.layout?
-      $layout = "#{_site.source}/_layouts/#{_page.layout}.html"
-      $buf =  swig.renderFile($layout, content: $buf, page: _page, site: _site, paginator: _paginator)
+    $buf = swig.render($buf, filename: $template, locals: page: $page, site: _site, paginator: _paginator, test: [1,2,3])
+    if $page.layout?
+      $layout = "#{_site.source}/_layouts/#{$page.layout}.html"
+      $buf =  swig.renderFile($layout, content: $buf, page: $page, site: _site, paginator: _paginator)
 
-  fs.writeFileSync $page, $buf
+  fs.writeFileSync $path, $buf
 
 #
 # Load page/post data
@@ -312,7 +316,7 @@ _load = ($template) ->
     $buf = $buf[2]
 
 
-  _page =
+  $page =
     category: ''
     categories: []
     content: $buf
@@ -323,9 +327,9 @@ _load = ($template) ->
     tag: ''
     tags: []
     title: ''
-    url: _get_url($template)
+    url: _post_url($template)
   for $key, $val of $fm
-    _page[$key] = $val
-  _page
+    $page[$key] = $val
+  $page
 
 
