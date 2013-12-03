@@ -41,7 +41,7 @@ module.exports =
     """
       {% include "header.html" %}
       <div class="row-fluid">
-          <div class="span12">
+          <div class="span8">
               {{ content }}
           </div>
       </div>
@@ -72,6 +72,12 @@ module.exports =
           <meta name="description" content="">
           <meta name="author" content="">
           <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap.min.css' type='text/css'/>
+          <style>
+          .container-narrow {
+              margin: 0 auto;
+              max-width: 800px;
+          }
+          </style>
           <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap-responsive.min.css' type='text/css'/>
           <link href="/favicon.png" rel="shortcut icon" type="image/png">
       </head>

@@ -35,7 +35,7 @@ module.exports =
 
     $config = """
       name: "#{$appname}"
-      description: "site description"
+      description: "On, Hekyll! On, Jekyll! On Hugin and Munin!"
 
       source: ./www
       destination: ./public

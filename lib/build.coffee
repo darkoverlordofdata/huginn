@@ -32,7 +32,7 @@ module.exports =
   run: ($args) ->
 
     $cfg = 'config.yml'
-    $root = path.resolve(__dirname,'..')
+    $root = process.cwd()
     if fs.existsSync("#{$root}/#{$cfg}")
       $config = yaml.load(fs.readFileSync("#{$root}/#{$cfg}"))
     else
@@ -64,9 +64,9 @@ module.exports =
       data:
         writable: false, value: {}
       source:
-        writable: false, value: path.resolve(__dirname, '..', $config.source)
+        writable: false, value: path.resolve($root, $config.source)
       destination:
-        writable: false, value: path.resolve(__dirname, '..', $config.destination)
+        writable: false, value: path.resolve($root, $config.destination)
 
     _site = Object.create($config, _site)
     swig.setDefaults autoescape:false
