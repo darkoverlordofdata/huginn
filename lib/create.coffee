@@ -62,7 +62,7 @@ module.exports =
       fs.mkdirSync $dir
     
     for $file in [
-      {path: "#{$path}/www/config.yml",             content: $config}
+      {path: "#{$path}/config.yml",                 content: $config}
       {path: "#{$path}/www/CNAME",                  content: "#{$appname}.com"}
       {path: "#{$path}/www/404.html",               content: '404'}
       {path: "#{$path}/www/index.html",             content: 'index'}

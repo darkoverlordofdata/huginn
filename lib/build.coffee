@@ -22,6 +22,7 @@ _paginator = {}
 _page = {}
 _site = {}
 
+
 module.exports =
 #
 # Generate a site
@@ -101,6 +102,7 @@ module.exports =
         swig.setFilter $plugin.name, $plugin.filter
 
     fs.mkdirSync _site.destination unless fs.existsSync(_site.destination)
+    fs.mkdirSync "#{_site.destination}/assets" unless fs.existsSync("#{_site.destination}/assets")
 
 
     #
@@ -125,6 +127,8 @@ module.exports =
     for $file in fs.readdirSync(_site.source)
       _generate_pages $file unless $file[0] is '_'#
 
+  url: ($path) ->
+    _get_url($path)
 
 # Generate pages
 #
@@ -182,14 +186,14 @@ _generate_post = ($path) ->
   $yy = $seg.shift()
   $mm = $seg.shift()
   $dd = $seg.shift()
-  $link = $seg.join('-')
+  $slug = $seg.join('-')
 
   fs.mkdirSync "#{_site.destination}/#{$yy}" unless fs.existsSync("#{_site.destination}/#{$yy}")
   fs.mkdirSync "#{_site.destination}/#{$yy}/#{$mm}" unless fs.existsSync("#{_site.destination}/#{$yy}/#{$mm}")
   fs.mkdirSync "#{_site.destination}/#{$yy}/#{$mm}/#{$dd}" unless fs.existsSync("#{_site.destination}/#{$yy}/#{$mm}/#{$dd}")
 
   $src = path.normalize("#{_site.source}/_posts/#{$path}")
-  $dst = path.normalize("#{_site.destination}/#{$yy}/#{$mm}/#{$dd}/#{$link}")
+  $dst = path.normalize("#{_site.destination}/#{$yy}/#{$mm}/#{$dd}/#{$slug}")
 
   _generate $src, $dst
 
@@ -222,6 +226,30 @@ _load_data = ($path) ->
     else console.log "WARN: Unknown data format: #{$path}"
 
 
+_get_url = ($template) ->
+
+  if $template.indexOf(_site.source) is 0
+    $template = $template.substr(_site.source.length)
+  if $template[0] is '/'
+    $template = $template.substr(1)
+
+  $path = path.dirname($template)
+  $ext = path.extname($template)
+  $name = path.basename($template, $ext)
+
+  if $path is '_posts'
+
+    $seg = $name.split('-')
+    $yy = $seg.shift()
+    $mm = $seg.shift()
+    $dd = $seg.shift()
+    $slug = $seg.join('-')
+    "/#{$yy}/#{$mm}/#{$dd}/#{$slug}#{$ext}"
+  else
+    if $path is '.'
+      "/#{$name}#{$ext}"
+    else
+      "/#{$path}/#{$name}#{$ext}"
 
 
 #
@@ -233,33 +261,36 @@ _load_data = ($path) ->
 #
 _generate = ($template, $page) ->
 
-  $fm = null
   $buf = String(fs.readFileSync($template))
-  if $buf[0..3] is '---\n'
-    # pull out the front matter and parse with yaml
-    $buf = $buf.split('---\n')
-    $fm = yaml.load($buf[1])
-    $buf = $buf[2]
+
+  if path.extname($template) is '.html'
+
+    $fm = null
+    if $buf[0..3] is '---\n'
+      # pull out the front matter and parse with yaml
+      $buf = $buf.split('---\n')
+      $fm = yaml.load($buf[1])
+      $buf = $buf[2]
 
 
-  _page =
-    content: ''
-    title: ''
-    excerpt: ''
-    url: ''
-    date: ''
-    id: ''
-    categories: []
-    tags: []
-    path: ''
-    content: $buf
-  for $key, $val of $fm
-    _page[$key] = $val
+    _page =
+      content: ''
+      title: ''
+      excerpt: ''
+      url: _get_url($template)
+      date: ''
+      id: ''
+      categories: []
+      tags: []
+      path: ''
+      content: $buf
+    for $key, $val of $fm
+      _page[$key] = $val
 
-  $buf = swig.render($buf, filename: $template, locals: page: _page, site: _site, paginator: _paginator, test: [1,2,3])
-  if _page.layout?
-    $layout = "#{_site.source}/_layouts/#{_page.layout}.html"
-    $buf =  swig.renderFile($layout, content: $buf, page: _page, site: _site, paginator: _paginator)
+    $buf = swig.render($buf, filename: $template, locals: page: _page, site: _site, paginator: _paginator, test: [1,2,3])
+    if _page.layout?
+      $layout = "#{_site.source}/_layouts/#{_page.layout}.html"
+      $buf =  swig.renderFile($layout, content: $buf, page: _page, site: _site, paginator: _paginator)
 
   fs.writeFileSync $page, $buf
 
@@ -292,7 +323,7 @@ _load = ($template) ->
     tag: ''
     tags: []
     title: ''
-    url: ''
+    url: _get_url($template)
   for $key, $val of $fm
     _page[$key] = $val
   _page
