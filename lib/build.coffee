@@ -141,17 +141,17 @@ module.exports = build =
       _load_pages $file unless $file[0] is '_'
 
     #
+    # Build the output
+    #
+    fs.mkdirSync _site.destination unless fs.existsSync(_site.destination)
+    fs.mkdirSync "#{_site.destination}/assets" unless fs.existsSync("#{_site.destination}/assets")
+
+    #
     # connect to plugins
     #
     for $plugin in _plugins
       $plugin.connect? _site, build
       $plugin.generate? _site, build
-
-    #
-    # Build the output
-    #
-    fs.mkdirSync _site.destination unless fs.existsSync(_site.destination)
-    fs.mkdirSync "#{_site.destination}/assets" unless fs.existsSync("#{_site.destination}/assets")
 
     #
     # process all posts
