@@ -20,7 +20,7 @@ _site       = {}
 _paginator  = {}
 _plugins    = []
 
-_types = ['.html']
+_types = ['.html', '.xml']
 
 module.exports = build =
 #
@@ -70,7 +70,7 @@ module.exports = build =
 
     _site = Object.create($config, _site)
     swig.setDefaults
-      autoescape:false
+      autoescape: false
       cache: false
 
     #
@@ -89,11 +89,21 @@ module.exports = build =
       swig.setTag $tag.tag, $tag.parse, $tag.compile, $tag.ends
 
     #
-    #   User plugins
+    # System plugins
+    #
+    for $name in _site.plugins
+      $plugin = require($name)
+      _plugins.push $plugin
+      if $plugin.tag?
+        swig.setTag $plugin.tag, $plugin.parse, $plugin.compile, $plugin.ends
+      else if $plugin.filter?
+        swig.setFilter $plugin.name, $plugin.filter
+
+    #
+    # User plugins
     #
     for $name in fs.readdirSync("#{_site.source}/_plugins")
       $plugin = require("#{_site.source}/_plugins/#{$name}")
-
       _plugins.push $plugin
       if $plugin.tag?
         swig.setTag $plugin.tag, $plugin.parse, $plugin.compile, $plugin.ends
@@ -336,7 +346,7 @@ _load_page = ($template) ->
     category: ''
     categories: []
     content: $buf
-    date: ''
+    date: new Date
     excerpt: ''
     id: ''
     path: ''

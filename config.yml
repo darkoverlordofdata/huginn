@@ -4,9 +4,6 @@ description: "if it's not dark, it's not data"
 disqus: d16a
 source: ./www
 destination: ./public
-tag_page_layout: tag_page
-tag_page_dir: tag
-
 port: 53610
 url: http://darkoverlordofdata.com
 
@@ -16,6 +13,13 @@ paginate_path: "list/page:num"
 markdown: rdiscount
 permalink: pretty
 pygments: true
+
+plugins:
+  - hugin-asset-bundler
+  - hugin-tag-cloud
+
+tag_page_layout: tag_page
+tag_page_dir: tag
 
 asset_bundler:
   compress:

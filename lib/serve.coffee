@@ -44,11 +44,13 @@ module.exports =
     $app.use express.bodyParser()
     $app.use express.methodOverride()
     $app.use express.static($config.destination)
+
     $app.use $app.router
     $app.use ($err, $req, $res, $next) ->
       $res.send 500, $err.stack
     $app.use ($req, $res, $next) ->
       $res.sendfile $404
+
     $app.listen $port, ->
       console.log "Express server listening on port #{$port}"
       console.log "http://localhost:#{$port}"
