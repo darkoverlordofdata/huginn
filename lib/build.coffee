@@ -102,25 +102,41 @@ module.exports = build =
     #
     # User plugins
     #
-    for $name in fs.readdirSync("#{_site.source}/_plugins")
-      $plugin = require("#{_site.source}/_plugins/#{$name}")
-      _plugins.push $plugin
-      if $plugin.tag?
-        swig.setTag $plugin.tag, $plugin.parse, $plugin.compile, $plugin.ends
-      else if $plugin.filter?
-        swig.setFilter $plugin.name, $plugin.filter
-
-    fs.mkdirSync _site.destination unless fs.existsSync(_site.destination)
-    fs.mkdirSync "#{_site.destination}/assets" unless fs.existsSync("#{_site.destination}/assets")
+    if fs.existsSync("#{_site.source}/_plugins")
+      for $name in fs.readdirSync("#{_site.source}/_plugins")
+        $plugin = require("#{_site.source}/_plugins/#{$name}")
+        _plugins.push $plugin
+        if $plugin.tag?
+          swig.setTag $plugin.tag, $plugin.parse, $plugin.compile, $plugin.ends
+        else if $plugin.filter?
+          swig.setFilter $plugin.name, $plugin.filter
 
 
     #
-    # pre-load data & variables
+    # pre-load data
     #
-    for $file in fs.readdirSync("#{_site.source}/_data")
-      _load_data $file
-    for $file in fs.readdirSync("#{_site.source}/_posts")
-      _load_post $file
+    if fs.existsSync("#{_site.source}/_data")
+      for $file in fs.readdirSync("#{_site.source}/_data")
+        _load_data $file
+
+    #
+    # pre-load posts
+    #
+    if fs.existsSync("#{_site.source}/_posts")
+      for $file in fs.readdirSync("#{_site.source}/_posts")
+        _load_post $file
+
+    #
+    # pre-load drafts?
+    #
+    if '-d' in $args or '--drafts' in $args
+      if fs.existsSync("#{_site.source}/_drafts")
+        for $file in fs.readdirSync("#{_site.source}/_drafts")
+          _load_post $file
+
+    #
+    # pre-load pages
+    #
     for $file in fs.readdirSync(_site.source)
       _load_pages $file unless $file[0] is '_'
 
@@ -132,10 +148,24 @@ module.exports = build =
       $plugin.generate? _site, build
 
     #
+    # Build the output
+    #
+    fs.mkdirSync _site.destination unless fs.existsSync(_site.destination)
+    fs.mkdirSync "#{_site.destination}/assets" unless fs.existsSync("#{_site.destination}/assets")
+
+    #
     # process all posts
     #
     for $file in fs.readdirSync("#{_site.source}/_posts")
       _generate_post $file
+
+
+    #
+    # process drafts
+    #
+    if '-d' in $args or '--drafts' in $args
+      for $file in fs.readdirSync("#{_site.source}/_posts")
+        _generate_post $file
 
     #
     # process all pages

@@ -14,6 +14,20 @@
 #
 hugin = require("../lib/huginn")
 
+$usage = """
+Usage:
+  huginn create PATH
+
+  cd PATH
+  huginn build [--drafts]
+  huginn serve
+
+Options:
+  -d  [--drafts]    # publish _drafts folder
+  -h  [--help]      # display this message
+  -v  [--version]   # display version
+
+"""
 switch process.argv[2]
 
   when 'create' then hugin.create process.argv.slice(3)...
@@ -22,5 +36,12 @@ switch process.argv[2]
 
   when 'serve' then hugin.serve process.argv.slice(3)
 
-  else console.log "ERR: Unknown command #{process.argv[2]}"
+  when '--version' then console.log "huginn v"+require('../package.json').version
 
+  when '-v' then console.log "huginn v"+require('../package.json').version
+
+  when '--help' then console.log $usage
+
+  when '-h' then console.log $usage
+
+  else console.log $usage

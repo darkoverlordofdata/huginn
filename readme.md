@@ -24,6 +24,22 @@ $ huginn build
 $ huginn serve
 ```
 
+### Usage
+
+    Usage:
+      huginn create PATH
+
+      cd PATH
+      huginn build [--drafts]
+      huginn serve
+
+    Options:
+      -d  [--drafts]    # publish _drafts folder
+      -h  [--help]      # display this message
+      -v  [--version]   # display version
+
+
+
 ## License
 
 (The MIT License)
