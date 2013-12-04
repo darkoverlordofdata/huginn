@@ -38,7 +38,22 @@ $ huginn serve
       -h  [--help]      # display this message
       -v  [--version]   # display version
 
+### Blog Conversion
 
+I started using Jekyll, but I don't enjoy using Ruby. So I created Huginn.
+Huginn uses Swig which is similar to Liquid, but there are some differences:
+
+*   Include filenames should be quoted:
+    {% include "header.html" %}
+
+*   For loops don't support :LIMIT n.
+    Use explicit: if loop.index <= n
+
+### TODO
+
+*   finish gist tag
+*   finish highlight tag
+*   create http://darkoverlordofdata/huginn
 
 ## License
 
