@@ -20,8 +20,9 @@ _site       = {}
 _paginator  = {}
 _plugins    = []
 
+_types = ['.html']
 
-module.exports =
+module.exports = build =
 #
 # Generate a site
 #
@@ -68,7 +69,9 @@ module.exports =
         writable: false, value: path.resolve($root, $config.destination)
 
     _site = Object.create($config, _site)
-    swig.setDefaults autoescape:false
+    swig.setDefaults
+      autoescape:false
+      cache: false
 
     #
     # load core plugins:
@@ -92,8 +95,6 @@ module.exports =
       $plugin = require("#{_site.source}/_plugins/#{$name}")
 
       _plugins.push $plugin
-      $plugin.connect? _site
-      $plugin.generate?()
       if $plugin.tag?
         swig.setTag $plugin.tag, $plugin.parse, $plugin.compile, $plugin.ends
       else if $plugin.filter?
@@ -114,6 +115,13 @@ module.exports =
       _load_pages $file unless $file[0] is '_'
 
     #
+    # connect to plugins
+    #
+    for $plugin in _plugins
+      $plugin.connect? _site, build
+      $plugin.generate? _site, build
+
+    #
     # process all posts
     #
     for $file in fs.readdirSync("#{_site.source}/_posts")
@@ -126,7 +134,10 @@ module.exports =
       _generate_pages $file unless $file[0] is '_'#
 
   url: ($path) ->
-    _post_url($path)
+    _post_url $path
+
+  render: ($path, $extra) ->
+    _render $path, $extra
 
 # Generate pages
 #
@@ -136,20 +147,20 @@ module.exports =
 #
 _generate_pages = ($tpl, $folder = '') ->
 
-  $src = path.normalize("#{_site.source}/#{$folder}/#{$tpl}")
-  $dst = path.normalize("#{_site.destination}/#{$folder}/#{$tpl}")
+  $tmp = path.normalize("#{_site.source}/#{$folder}/#{$tpl}")
+  $out = path.normalize("#{_site.destination}/#{$folder}/#{$tpl}")
 
-  $stats = fs.statSync($src)
+  $stats = fs.statSync($tmp)
 
   if $stats.isDirectory()
 
-    fs.mkdirSync $dst unless fs.existsSync($dst)
-    for $f in fs.readdirSync($src)
-      _generate_pages $f, "#{$folder}/#{$tpl}"
+    fs.mkdirSync $out unless fs.existsSync($out)
+    for $file in fs.readdirSync($tmp)
+      _generate_pages $file, "#{$folder}/#{$tpl}"
 
   else if $stats.isFile()
-    console.log $src
-    _generate $src, $dst
+    console.log $tmp
+    fs.writeFileSync $out, _render($tmp)
 
 
 #
@@ -169,8 +180,8 @@ _load_pages = ($path, $folder = '') ->
       _load_pages $f, "#{$folder}/#{$path}"
 
   else if $stats.isFile()
-    if path.extname($src) in ['.html']
-      _site.pages.push _load($src)
+    if path.extname($src) in _types
+      _site.pages.push _load_page($src)
 
 
 #
@@ -190,10 +201,10 @@ _generate_post = ($path) ->
   fs.mkdirSync "#{_site.destination}/#{$yy}/#{$mm}" unless fs.existsSync("#{_site.destination}/#{$yy}/#{$mm}")
   fs.mkdirSync "#{_site.destination}/#{$yy}/#{$mm}/#{$dd}" unless fs.existsSync("#{_site.destination}/#{$yy}/#{$mm}/#{$dd}")
 
-  $src = path.normalize("#{_site.source}/_posts/#{$path}")
-  $dst = path.normalize("#{_site.destination}/#{$yy}/#{$mm}/#{$dd}/#{$slug}")
+  $tmp = path.normalize("#{_site.source}/_posts/#{$path}")
+  $out = path.normalize("#{_site.destination}/#{$yy}/#{$mm}/#{$dd}/#{$slug}")
 
-  _generate $src, $dst
+  fs.writeFileSync $out, _render($tmp)
 
 #
 # Load post data
@@ -203,7 +214,7 @@ _generate_post = ($path) ->
 #
 _load_post = ($path) ->
   $src = path.normalize("#{_site.source}/_posts/#{$path}")
-  _site.posts.push _load($src)
+  _site.posts.push _load_page($src)
 
 
 #
@@ -231,6 +242,9 @@ _load_data = ($path) ->
 # @return none
 #
 _post_url = ($template) ->
+  _parse_url($template).path
+
+_parse_url = ($template) ->
 
   if $template.indexOf(_site.source) is 0
     $template = $template.substr(_site.source.length)
@@ -244,70 +258,72 @@ _post_url = ($template) ->
   if $path is '_posts'
 
     $seg = $name.split('-')
-    $yy = $seg.shift()
+    $yyyy = $seg.shift()
     $mm = $seg.shift()
     $dd = $seg.shift()
     $slug = $seg.join('-')
-    "/#{$yy}/#{$mm}/#{$dd}/#{$slug}#{$ext}"
+    return {
+      post  : true
+      path  : "/#{$yyyy}/#{$mm}/#{$dd}/#{$slug}#{$ext}"
+      yyyy  : $yyyy
+      mm    : $mm
+      dd    : $dd
+      slug  : $slug
+      ext   : $ext
+    }
   else
     if $path is '.'
-      "/#{$name}#{$ext}"
+      return {
+        post  : false
+        path  : "/#{$name}#{$ext}"
+        slug  : $name
+        ext   : $ext
+      }
     else
-      "/#{$path}/#{$name}#{$ext}"
-
+      return {
+        post  : false
+        path  : "/#{$path}/#{$name}#{$ext}"
+        slug  : $name
+        ext   : $ext
+      }
 
 #
-# Generate a page from a template
+# Render a template, create output at path
 #
 # @param  [String]  template
-# @param  [String]  page
+# @param  [String]  extra page data
 # @return none
 #
-_generate = ($template, $path) ->
+_render = ($template, $extra = {}) ->
 
-  $buf = String(fs.readFileSync($template))
-
-  if path.extname($template) is '.html'
-
-    $fm = null
-    if $buf[0..3] is '---\n'
-      # pull out the front matter and parse with yaml
-      $buf = $buf.split('---\n')
-      $fm = yaml.load($buf[1])
-      $buf = $buf[2]
-
-
-    $page =
-      content: ''
-      title: ''
-      excerpt: ''
-      url: _post_url($template)
-      date: ''
-      id: ''
-      categories: []
-      tags: []
-      path: ''
-      content: $buf
-    for $key, $val of $fm
+  #
+  # Make sure it's a template
+  #
+  if path.extname($template) in _types
+    $page = _load_page($template)
+    for $key, $val of $extra
       $page[$key] = $val
 
-    $buf = swig.render($buf, filename: $template, locals: page: $page, site: _site, paginator: _paginator, test: [1,2,3])
+    $buf = swig.render($page.content, filename: $template, locals: page: $page, site: _site, paginator: _paginator)
     if $page.layout?
       $layout = "#{_site.source}/_layouts/#{$page.layout}.html"
-      $buf =  swig.renderFile($layout, content: $buf, page: $page, site: _site, paginator: _paginator)
+      $buf = swig.renderFile($layout, content: $buf, page: $page, site: _site, paginator: _paginator)
 
-  fs.writeFileSync $path, $buf
+    $buf
+
+  else String(fs.readFileSync($template))
 
 #
-# Load page/post data
+# Load template data
 #
 # @param  [String]  template
 # @param  [String]  page
 # @return none
 #
-_load = ($template) ->
+_load_page = ($template) ->
 
   $fm = null
+
   $buf = String(fs.readFileSync($template))
   if $buf[0..3] is '---\n'
     # pull out the front matter and parse with yaml
@@ -328,6 +344,10 @@ _load = ($template) ->
     tags: []
     title: ''
     url: _post_url($template)
+
+  if ($url = _parse_url($template)).post
+    $page.date = new Date($url.yyyy, $url.mm, $url.dd)
+
   for $key, $val of $fm
     $page[$key] = $val
   $page

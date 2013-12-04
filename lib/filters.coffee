@@ -24,51 +24,51 @@ _month_long = [
 ]
 
 module.exports =
-  date_to_xmlschema: ($input) ->
-    $input.toISOString()
+  date_to_xmlschema: ($0) ->
+    $0.toISOString()
   
-  date_to_rfc822: ($input) ->
-    $input.toUTCString()
+  date_to_rfc822: ($0) ->
+    $0.toUTCString()
   
-  date_to_string: ($input) ->
-    $input.getDate()+' '+_month_short[$input.getMonth()]+' '+$input.getFullYear()
+  date_to_string: ($0) ->
+    $0.getDate()+' '+_month_short[$0.getMonth()]+' '+$0.getFullYear()
   
-  date_to_long_string: ($input) ->
-    return Date()
-    if $input is '' then $input = Date()
-    $input = new Date($input)
-    $input.getDate()+' '+_month_long[$input.getMonth()]+' '+$input.getFullYear()
+  date_to_long_string: ($0) ->
+    $0.getDate()+' '+_month_long[$0.getMonth()]+' '+$0.getFullYear()
   
-  xml_escape: ($input) ->
-    escape($input)
+  xml_escape: ($0) ->
+    escape($0)
   
-  cgi_escape: ($input) ->
-    escape($input)
+  cgi_escape: ($0) ->
+    escape($0)
   
-  uri_escape: ($input) ->
-    encodeURI($input)
+  uri_escape: ($0) ->
+    encodeURI($0)
   
-  number_of_words: ($input) ->
-    if ($match = $input.match(_word_count))
+  number_of_words: ($0) ->
+    if ($match = $0.match(_word_count))
       $match.length
     else
       0
-  
-  array_to_sentence_string: ($input) ->
-    switch $input.length
+
+  tags: ($0) ->
+    $0.tags
+
+  array_to_sentence_string: ($0) ->
+    switch $0.length
       when 0 then ''
-      when 1 then $input[0]
-      when 2 then "#{$input[0]} and #{$input[1]}"
+      when 1 then $0[0]
+      when 2 then "#{$0[0]} and #{$0[1]}"
       else
-        $last = $input.pop()
-        $input.join(', ')+', and '+$last
+        $last = $0.pop()
+        $0.join(', ')+', and '+$last
   
-  textilize: ($input) ->
-    textile($input)
+  textilize: ($0) ->
+    textile($0)
   
-  markdownify: ($input) ->
-    md($input)
+  markdownify: ($0) ->
+    md($0)
   
-  jsonify: ($input) ->
-    JSON.stringify($input)
+  jsonify: ($0) ->
+    JSON.stringify($0)
 

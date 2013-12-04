@@ -27,8 +27,6 @@ module.exports =
   tag: 'post_url'   # {% post_url %}
   ends: false       # no end tag
 
-  connect: ($site) ->
-
   #
   # build the executable
   #
