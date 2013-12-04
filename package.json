@@ -1,6 +1,6 @@
 {
-  "name": "hugin",
-  "version": "0.0.3",
+  "name": "huginn",
+  "version": "0.0.1",
   "description": "Static blog pages",
   "keywords": [
     "static blog",
@@ -16,18 +16,18 @@
   "dependencies": {
     "yaml-js": "0.0.8",
     "swig": "~1.1.0",
-    "hugin-asset-bundler": "0.0.1",
-    "hugin-tag-cloud": "0.0.1"
+    "huginn-asset-bundler": "0.0.1",
+    "huginn-tag-cloud": "0.0.1"
   },
   "scripts": {
     "start": "node ./index.js",
     "test": "cake test"
   },
   "bin": {
-    "hugin": "./bin/hugin"
+    "huginn": "./bin/huginn"
   },
   "devDependencies": {},
-  "repository": "git://github.com/darkoverlordofdata/hugin",
+  "repository": "git://github.com/darkoverlordofdata/huginn",
   "main": "index",
   "engines": {
     "node": ">=0.10.x",

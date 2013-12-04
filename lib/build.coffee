@@ -4,9 +4,9 @@
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
 #|
-#| This file is a part of Hugin
+#| This file is a part of Huginn
 #|
-#| Hugin is free software; you can copy, modify, and distribute
+#| Huginn is free software; you can copy, modify, and distribute
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
@@ -36,10 +36,10 @@ module.exports = build =
     if fs.existsSync("#{$root}/#{$cfg}")
       $config = yaml.load(fs.readFileSync("#{$root}/#{$cfg}"))
     else
-      process.exit console.log("ERR: Hugin config file #{$cfg} not found")
+      process.exit console.log("ERR: Huginn config file #{$cfg} not found")
 
     if not fs.existsSync($config.source)
-      process.exit console.log("ERR: Hugin source directory #{$config.source} not found")
+      process.exit console.log("ERR: Huginn source directory #{$config.source} not found")
 
 
 

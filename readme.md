@@ -1,8 +1,8 @@
-# Hugin
+# Huginn
 
 pronounced "HOO-gin"
 
-"On, Hekyll! On, Jekyll! On Hugin and Munin!"
+"On, Hekyll! On, Jekyll! On Huginn and Muninn!"
 
 Static Page generator
 
@@ -11,17 +11,17 @@ Static Page generator
 ### Install
 
 ```bash
-$ sudo npm install hugin -g
+$ sudo npm install huginn -g
 ```
 
 
 ### Create a new application
 
 ```bash
-$ hugin create <appname>
+$ huginn create <appname>
 $ cd <appname>
-$ hugin build
-$ hugin serve
+$ huginn build
+$ huginn serve
 ```
 
 ## License

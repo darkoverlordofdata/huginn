@@ -4,16 +4,16 @@
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
 #|
-#| This file is a part of Hugin
+#| This file is a part of Huginn
 #|
-#| Hugin is free software; you can copy, modify, and distribute
+#| Huginn is free software; you can copy, modify, and distribute
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
 # Create a new app folder:
 #
-#   hugin create <appname>
+#   huginn create <appname>
 #
 #
 fs = require('fs')
@@ -35,7 +35,7 @@ module.exports =
 
     $config = """
       name: "#{$appname}"
-      description: "On, Hekyll! On, Jekyll! On Hugin and Munin!"
+      description: "On, Hekyll! On, Jekyll! On Huginn and Muninn!"
 
       source: ./www
       destination: ./public

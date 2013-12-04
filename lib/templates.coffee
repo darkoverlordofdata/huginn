@@ -4,9 +4,9 @@
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
 #|
-#| This file is a part of Hugin
+#| This file is a part of Huginn
 #|
-#| Hugin is free software; you can copy, modify, and distribute
+#| Huginn is free software; you can copy, modify, and distribute
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
@@ -105,7 +105,7 @@ module.exports =
   posts_hello:  ->
     """
       ---
-      title: Hugin
+      title: Huginn
       layout: post
       tags: coffeescript
       ---
@@ -113,9 +113,9 @@ module.exports =
           pronounced "HOO-gin"
       </p>
       <p>
-          Hugin is a static page generator.
+          Huginn is a static page generator.
       </p>
       <p>
-        "On, Hekyll! On, Jekyll! On Hugin and Munin!"
+        "On, Hekyll! On, Jekyll! On Huginn and Muninn!"
       </p>
     """

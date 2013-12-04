@@ -15,8 +15,8 @@ permalink: pretty
 pygments: true
 
 plugins:
-  - hugin-asset-bundler
-  - hugin-tag-cloud
+  - huginn-asset-bundler
+  - huginn-tag-cloud
 
 tag_page_layout: tag_page
 tag_page_dir: tag
