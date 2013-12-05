@@ -26,7 +26,7 @@ module.exports =
 #
   run: ($args) ->
 
-    $cfg = 'config.yml'
+    $cfg = if '--dev' in $args then 'config-dev.yml' else 'config.yml'
     $root = process.cwd()
     if fs.existsSync("#{$root}/#{$cfg}")
       $config = yaml.load(fs.readFileSync("#{$root}/#{$cfg}"))
@@ -37,13 +37,23 @@ module.exports =
       process.exit console.log("ERR: #{$config.destination} not built")
 
     $404 = path.resolve($config.destination, '404.html')
+
     $app = express()
-    $app.set 'port', ($port = 0xd16a)
+    $app.set 'port', ($port = $config.port ? 0xd16a)
     $app.use express.favicon()
     $app.use express.logger('dev')
     $app.use express.bodyParser()
     $app.use express.methodOverride()
-    $app.use express.static($config.destination)
+
+    if $config.serve?
+      if 'string' is typeof $config.serve
+        $app.use express.static(path.resolve($root, $config.serve))
+      else
+        for $path in $config.serve
+          console.log path.resolve($root, $path)
+          $app.use express.static(path.resolve($root, $path))
+    else
+      $app.use express.static(path.resolve($root, $config.destination))
 
     $app.use $app.router
     $app.use ($err, $req, $res, $next) ->

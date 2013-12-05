@@ -19,13 +19,15 @@ Usage:
   huginn create PATH
 
   cd PATH
-  huginn build [--drafts]
-  huginn serve
+  huginn build [--drafts] [--dev]
+  huginn serve [--dev]
 
 Options:
   -d  [--drafts]    # publish _drafts folder
   -h  [--help]      # display this message
   -v  [--version]   # display version
+
+  --dev             # use config-dev.yml
 
 """
 switch process.argv[2]

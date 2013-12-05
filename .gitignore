@@ -1,7 +1,6 @@
 npm-debug.log
 /.idea
 /node_modules
-/lib/_plugins
 /www
-/wwwz
 /public
+/test

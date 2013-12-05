@@ -49,6 +49,8 @@ Huginn uses Swig which is similar to Liquid, but there are some differences:
 *   For loops don't support :LIMIT n.
     Use explicit: if loop.index <= n
 
+*   For loops use 'loop' variable instead of 'forloop'.
+
 ### TODO
 
 *   finish gist tag

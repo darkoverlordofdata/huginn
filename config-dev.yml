@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| config.yml
+#| config-dev.yml
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -11,14 +11,19 @@
 #|
 #+--------------------------------------------------------------------+
 #
-# Production configuration
+# Use with huginn serve --dev
 #
 name: "Huginn"
 description: "Static Site Generator"
 
+
 source: ./www
-destination: ../gh-pages
-url: http://darkoverlordofdata.com/huginn
+destination: ./gh-pages/huginn
+serve:
+  - ./gh-pages
+  - ../../darkoverlordofdata.github.io/master
+url: http://localhost/
+port: 53610
 
 
 plugins:
@@ -29,9 +34,10 @@ asset_bundler:
     js: true
     css: true
   base_path: /assets/
+  shim: /huginn
   server_url: //cdn.darkoverlordofdata.com/
   remove_bundled: false
-  dev: false
+  dev: true
   markup_templates:
     js: "<script type='text/javascript' src='{{url}}'></script>\n"
     css: "<link rel='stylesheet' type='text/css' href='{{url}}' />\n"

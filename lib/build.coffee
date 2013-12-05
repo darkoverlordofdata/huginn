@@ -31,7 +31,7 @@ module.exports = build =
 #
   run: ($args) ->
 
-    $cfg = 'config.yml'
+    $cfg = if '--dev' in $args then 'config-dev.yml' else 'config.yml'
     $root = process.cwd()
     if fs.existsSync("#{$root}/#{$cfg}")
       $config = yaml.load(fs.readFileSync("#{$root}/#{$cfg}"))

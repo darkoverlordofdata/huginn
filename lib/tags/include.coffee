@@ -11,7 +11,8 @@
 #|
 #+--------------------------------------------------------------------+
 #
-# The standard include tag, but it looks in the #{source}\_includes folder
+# SWIG standard include tag.
+# Patched to look in the #{source}\_includes folder.
 #
 
 path = require('path')
