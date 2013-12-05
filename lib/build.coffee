@@ -259,7 +259,7 @@ _generate_post = ($path) ->
 #
 _load_post = ($path) ->
   $src = path.normalize("#{_site.source}/_posts/#{$path}")
-  _site.posts.push _load_page($src)
+  _site.posts.unshift _load_page($src)
 
 
 #
