@@ -1,6 +1,6 @@
 {
   "name": "huginn",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Static blog pages",
   "keywords": [
     "static blog",
@@ -16,8 +16,8 @@
   "dependencies": {
     "yaml-js": "0.0.8",
     "swig": "~1.1.0",
-    "huginn-asset-bundler": "0.0.1",
-    "huginn-tag-cloud": "0.0.1"
+    "huginn-asset-bundler": "*",
+    "huginn-tag-cloud": "*"
   },
   "scripts": {
     "start": "node ./index.js",

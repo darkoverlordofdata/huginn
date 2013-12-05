@@ -29,6 +29,7 @@ asset_bundler:
     js: true
     css: true
   base_path: /assets/
+  shim: /huginn
   server_url: //cdn.darkoverlordofdata.com/
   remove_bundled: false
   dev: false
