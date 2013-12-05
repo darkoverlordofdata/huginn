@@ -199,8 +199,13 @@ _generate_pages = ($tpl, $folder = '') ->
       _generate_pages $file, "#{$folder}/#{$tpl}"
 
   else if $stats.isFile()
-    console.log $tmp
-    fs.writeFileSync $out, _render($tmp)
+    console.log $out
+    if path.extname($tmp) in _types
+      fs.writeFileSync $out, _render($tmp)
+    else
+      $bin = fs.createWriteStream($out)
+      $bin.write fs.readFileSync($tmp)
+      $bin.end()
 
 
 #
@@ -351,7 +356,7 @@ _render = ($template, $extra = {}) ->
 
     $buf
 
-  else String(fs.readFileSync($template))
+  else fs.readFileSync($template)
 
 #
 # Load template data
