@@ -26,7 +26,7 @@ module.exports = build =
 #
 # Generate a site
 #
-# @param  [String]  cfg alternate config file name
+# @param  [Array<String>]  command line args
 # @return none
 #
   run: ($args) ->

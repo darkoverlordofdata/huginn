@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| create.coffee
+#| serve.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -19,9 +19,9 @@ express = require('express')
 
 module.exports =
 #
-# create a new project
+# serve the generated dite locally
 #
-# @param  [String]  cfg alternate config file name
+# @param  [Array<String>]  command line args
 # @return none
 #
   run: ($args) ->

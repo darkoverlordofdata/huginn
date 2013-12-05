@@ -18,7 +18,7 @@ _site = null
 
 module.exports =
 
-  tag: 'highlight'    # {% highlight %}
+  tag: 'highlight'    # {% highlight "lang" %}
   ends: true          # {% endhighlight %}
 
   connect: ($site) ->
@@ -27,10 +27,42 @@ module.exports =
   #
   # build the executable
   #
-  compile: (compiler, args) ->
-    ''
+  compile: (compiler, args, content, parents, options, blockName) ->
+
+    $lang = args.shift()[1..-2]
+    $linenos = if args.length > 0 then true else false
+
+    $content = ""
+    if $linenos
+      $content += "_output += \"<pre class='prettyprint lang-#{$lang} linenums:1'>\";"
+    else
+      $content += "_output += \"<pre class='prettyprint lang-#{$lang}'>\";"
+
+    $content += compiler(content, parents, options, blockName)
+    $content += "_output += \"</pre>\";"
+    return $content
+
+
   #
   # build the tag
   #
   parse: (str, line, parser, types, stack, opts) ->
+    $lang = undefined
+    $linenos = undefined
+
+    parser.on types.STRING, (token) ->
+      unless $lang
+        $lang = token.match
+        @out.push $lang
+        return
+      true
+
+    parser.on types.VAR, (token) ->
+      unless $linenos
+        if token.match is "linenos"
+          @out.push true
+          return
+      true
+
     true
+

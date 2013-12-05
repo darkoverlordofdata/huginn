@@ -24,6 +24,7 @@ _month_long = [
 ]
 
 module.exports =
+
   date_to_xmlschema: ($0) ->
     $0.toISOString()
   

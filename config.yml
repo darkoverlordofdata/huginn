@@ -15,11 +15,10 @@
 #
 name: "Huginn"
 description: "Static Site Generator"
-
-source: ./www
-destination: ../gh-pages
 url: http://darkoverlordofdata.com/huginn
 
+source: ./source
+destination: ../gh-pages
 
 plugins:
   - huginn-asset-bundler

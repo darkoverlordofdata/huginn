@@ -11,20 +11,20 @@
 #|
 #+--------------------------------------------------------------------+
 #
+# Development configuration
+#
 # Use with huginn serve --dev
 #
 name: "Huginn"
 description: "Static Site Generator"
+url: http://localhost/
+port: 0xd16a
 
-
-source: ./www
+source: ./source
 destination: ./gh-pages/huginn
 serve:
   - ./gh-pages
   - ../../darkoverlordofdata.github.io/master
-url: http://localhost/
-port: 53610
-
 
 plugins:
   - huginn-asset-bundler
