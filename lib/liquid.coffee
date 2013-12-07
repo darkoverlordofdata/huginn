@@ -13,30 +13,46 @@
 #
 # Liquid.js wrapper
 #
+# Copy your Liquid.js distro file to the same folder
+#
+#
 fs = require('fs')
 path = require('path')
 
-module.exports = ($site) ->
+LIQUID_JS = './liquid.js' # path to the Liquid.js distribution
+                          # relative to the current folder
+
+#
+# Initialize Liquid
+#
+# Satisfies dependancies, loads liquid.js
+#
+# @paran  [String]  source  file system root
+# @param  [String]  lang    iso 639-1 language code
+# @returns [Object] the Liquid.js module reference
+#
+#
+module.exports = ($source, $lang='en') ->
 
   #
-  # Create a mock document object for strftime
+  # Fabricate a document object for strftime
   #
   Object.defineProperties @,
     document:
       get: ->
         getElementsByTagName: ($name) ->
-          if $name is 'html' then [lang: $site.lang ? 'en'] else []
+          if $name is 'html' then [lang: $lang] else []
 
   #
   # Now we can safely load Liquid.js
   #
-  eval String(fs.readFileSync(path.resolve(__dirname, './liquid.js')))
+  eval String(fs.readFileSync(path.resolve(__dirname, LIQUID_JS)))
 
   #
-  # Load template files from _includes\ folder
+  # Load template files from folder
   #
   Liquid.readTemplateFile = ($file) ->
-    $path = path.resolve($site.source, '_includes', $file)
+    $path = path.resolve($source, $file)
     String(fs.readFileSync($path))
 
   Liquid

@@ -15,13 +15,18 @@ fs = require('fs')
 path = require('path')
 yaml = require('yaml-js')
 liquid = require('./liquid.coffee')
+#
+# valid template filetypes
+#
+TYPES = ['.html', '.xml']
+#
+# Liquid.js module
+#
+Liquid      = null
 
-_site       = {}
-_paginator  = {}
-_plugins    = []
+_site       = {}  # Site object tree
+_paginator  = {}  # Pagination object
 
-_types = ['.html', '.xml']
-Liquid = null
 
 module.exports = build =
 #
@@ -71,7 +76,7 @@ module.exports = build =
 
     _site = Object.create($config, _site)
 
-    Liquid = liquid(_site)
+    Liquid = liquid(path.resolve(_site.source, '_includes'))
     #
     # load core plugins:
     #
@@ -85,20 +90,22 @@ module.exports = build =
       $tag = require("#{__dirname}/tags/#{$name}")
       $tag Liquid, _site, build
 
+
+    $plugins = []  # Plugins list
     #
     # System plugins
     #
     if _site.plugins?
       for $name in _site.plugins
-        _plugins.push require($name)
+        $plugins.push require($name)
 
     #
     # User plugins
     #
-    if fs.existsSync("#{_site.source}/_plugins")
-      for $name in fs.readdirSync("#{_site.source}/_plugins")
-        $plugin = require("#{_site.source}/_plugins/#{$name}")
-        _plugins.push $plugin
+    if fs.existsSync("#{_site.source}/$plugins")
+      for $name in fs.readdirSync("#{_site.source}/$plugins")
+        $plugin = require("#{_site.source}/$plugins/#{$name}")
+        $plugins.push $plugin
 
     #
     # pre-load data
@@ -137,7 +144,7 @@ module.exports = build =
     #
     # connect to plugins
     #
-    for $plugin in _plugins
+    for $plugin in $plugins
       $plugin Liquid, _site, build
 
     #
@@ -187,7 +194,7 @@ _generate_pages = ($tpl, $folder = '') ->
 
   else if $stats.isFile()
     console.log $out
-    if path.extname($tmp) in _types
+    if path.extname($tmp) in TYPES
       fs.writeFileSync $out, _render($tmp)
     else
       $bin = fs.createWriteStream($out)
@@ -212,7 +219,7 @@ _load_pages = ($path, $folder = '') ->
       _load_pages $f, "#{$folder}/#{$path}"
 
   else if $stats.isFile()
-    if path.extname($src) in _types
+    if path.extname($src) in TYPES
       _site.pages.push _load_page($src)
 
 
@@ -331,8 +338,8 @@ _render = ($template, $extra = {}) ->
   #
   # Make sure it's a template
   #
-  if path.extname($template) in _types
-    $page = _load_page($template)
+  if path.extname($template) in TYPES
+      $page = _load_page($template)
     for $key, $val of $extra
       $page[$key] = $val
 
