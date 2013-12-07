@@ -71,14 +71,13 @@ module.exports = build =
 
     _site = Object.create($config, _site)
 
-    Liquid = liquid.connect(_site)
+    Liquid = liquid(_site)
     #
     # load core plugins:
     #
     #   Filters
     #
-#    for $name, $function of require("#{__dirname}/filters.coffee")
-#      swig.setFilter $name, $function
+    Liquid.Template.registerFilter require("#{__dirname}/filters.coffee")
     #
     #   Tags
     #

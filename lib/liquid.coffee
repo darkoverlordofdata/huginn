@@ -16,51 +16,28 @@
 fs = require('fs')
 path = require('path')
 
-_site = null
-_lang = 'en'
-#
-# If we're in the browser, it's business as usual
-#
-if window?
-  #
-  # load 'file' from in-document
-  #
-  Liquid.readTemplateFile = ($file) ->
-    document.getElementById($file).value
+module.exports = ($site) ->
 
-
-#
-# Interface to node.js
-#
-else
   #
-  # Create a mock document obect for strftime
+  # Create a mock document object for strftime
   #
-  Object.defineProperties global,
+  Object.defineProperties @,
     document:
       get: ->
         getElementsByTagName: ($name) ->
-          if $name is 'html' then [lang: _lang] else []
+          if $name is 'html' then [lang: $site.lang ? 'en'] else []
 
   #
   # Now we can safely load Liquid.js
   #
   eval String(fs.readFileSync(path.resolve(__dirname, './liquid.js')))
+
   #
-  # Load template file from _includes
+  # Load template files from _includes\ folder
   #
   Liquid.readTemplateFile = ($file) ->
-    $path = path.resolve(_site.source, '_includes', $file)
+    $path = path.resolve($site.source, '_includes', $file)
     String(fs.readFileSync($path))
 
+  Liquid
 
-Object.defineProperties module.exports,
-  connect:
-    value: ($site) ->
-      _site = $site
-      _lang = $site.lang ? _lang
-      Liquid
-
-  Liquid:
-    get: ->
-      Liquid
