@@ -91,7 +91,7 @@ module.exports = build =
       $tag Liquid, _site, build
 
 
-    $plugins = []  # Plugins list
+    $plugins = []
     #
     # System plugins
     #
