@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>http://localhost//404.html</loc>
-        <lastmod>2013-12-05T15:25:42.711Z</lastmod>
-    </url>
-    <url>
-        <loc>http://localhost//index.html</loc>
-        <lastmod>2013-12-05T15:25:42.712Z</lastmod>
-    </url>
-    <url>
-        <loc>http://localhost//sitemap.xml</loc>
-        <lastmod>2013-12-05T15:25:42.712Z</lastmod>
-    </url>
+    
+    
 </urlset>

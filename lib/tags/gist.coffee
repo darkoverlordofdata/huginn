@@ -13,61 +13,23 @@
 #
 # Embed a link to a post specified by the source filename
 #
+module.exports = (Liquid) ->
 
-path = require('path')
-build = require('./../build.coffee')
-_dir = ''
+  class Gist extends Liquid.Tag
 
-ignore = "ignore"
-missing = "missing"
-only = "only"
+    id: ''
+    file: ''
 
-module.exports =
+    constructor: ($name, $markup, $tokens) ->
+      super
+      [@id, @file] = $markup.split(' ', 2)
 
-  tag: 'gist'       # {% gist %}
-  ends: false       # no end tag
+    render: ($ctx) ->
+      super
+      if @file.length
+        "<script src=\"https://gist.github.com/#{@id}.js?#{@file}\"></script>"
+      else
+        "<script src=\"https://gist.github.com/#{@id}.js\"></script>"
 
-  connect: ($site) ->
+  Liquid.Template.registerTag "gist", Gist
 
-  #
-  # build the executable
-  #
-  compile: (compiler, args) ->
-    file = build.url(args.shift())
-    "_output +=<a href=\"#{file}\">#{file}</a>"
-  #
-  # build the tag
-  #
-  parse: (str, line, parser, types, stack, opts) ->
-    file = undefined
-    w = undefined
-
-    parser.on types.STRING, (token) ->
-      unless file
-        file = token.match
-        @out.push file
-        return
-      true
-
-    parser.on types.VAR, (token) ->
-      unless file
-        file = token.match
-        return true
-      if not w and token.match is "with"
-        w = true
-        return
-      if w and token.match is only and @prevToken.match isnt "with"
-        @out.push token.match
-        return
-      return false  if token.match is ignore
-      if token.match is missing
-        throw new Error("Unexpected token \"" + missing + "\" on line " + line + ".")  if @prevToken.match isnt ignore
-        @out.push token.match
-        return false
-      throw new Error("Expected \"" + missing + "\" on line " + line + " but found \"" + token.match + "\".")  if @prevToken.match is ignore
-      true
-
-    parser.on "end", ->
-      @out.push opts.filename or null
-
-    true

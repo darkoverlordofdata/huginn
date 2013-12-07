@@ -13,57 +13,24 @@
 #
 # highlight code listing
 #
+highlight = require("highlight.js").highlight
 
-module.exports =
+module.exports = (Liquid) ->
 
-  tag: 'highlight'    # {% highlight "lang" %}
-  ends: true          # {% endhighlight %}
+  class Highlight extends Liquid.Block
 
-  #
-  # Build the executable javascript
-  #
-  compile: ($compiler, $args, $content, $parents, $options, $blockName) ->
+    code: ''
+    lang: ''
 
-    $lang = $args.shift()[1..-2]
-    $linenos = if $args.length > 0 then ' linenums:1' else ''
+    constructor: ($name, $markup, $tokens) ->
+      @lang = $markup.split(' ')[0]
+      super
 
-    """
-      _output += \"<pre class='prettyprint lang-#{$lang}#{$linenos}'>\";
-      #{$compiler($content, $parents, $options, $blockName)}
-      _output += \"</pre>\";
-    """
+    render: ($ctx) ->
+
+      @code = highlight(@lang, super[0]).value
+      "<pre><code class=\"#{@lang}\">#{@code}</code></pre>"
 
 
-  #
-  # Parse:
-  #
-  # {% highlight lang [linenos] %}
-  # ...
-  # {% endhighlight %}
-  #
-  parse: ($str, $line, $parser, $types, $stack, $opts) ->
-    $lang = undefined
-    $linenos = undefined
 
-    #
-    # lang
-    #
-    $parser.on $types.STRING, ($token) ->
-      unless $lang
-        $lang = $token.match
-        @out.push $lang
-        return
-      true
-
-    #
-    # line numbers?
-    #
-    $parser.on $types.VAR, ($token) ->
-      unless $linenos
-        if $token.match is "linenos"
-          @out.push true
-          return
-      true
-
-    true
-
+  Liquid.Template.registerTag "highlight", Highlight

@@ -14,13 +14,14 @@
 fs = require('fs')
 path = require('path')
 yaml = require('yaml-js')
-swig = require('swig')
+liquid = require('./liquid.coffee')
 
 _site       = {}
 _paginator  = {}
 _plugins    = []
 
 _types = ['.html', '.xml']
+Liquid = null
 
 module.exports = build =
 #
@@ -69,35 +70,28 @@ module.exports = build =
         writable: false, value: path.resolve($root, $config.destination)
 
     _site = Object.create($config, _site)
-    swig.setDefaults
-      autoescape: false
-      cache: false
 
+    Liquid = liquid.connect(_site)
     #
     # load core plugins:
     #
     #   Filters
     #
-    for $name, $function of require("#{__dirname}/filters")
-      swig.setFilter $name, $function
+#    for $name, $function of require("#{__dirname}/filters.coffee")
+#      swig.setFilter $name, $function
     #
     #   Tags
     #
     for $name in fs.readdirSync("#{__dirname}/tags")
       $tag = require("#{__dirname}/tags/#{$name}")
-      $tag.connect? _site
-      swig.setTag $tag.tag, $tag.parse, $tag.compile, $tag.ends
+      $tag Liquid, _site, build
 
     #
     # System plugins
     #
-    for $name in _site.plugins
-      $plugin = require($name)
-      _plugins.push $plugin
-      if $plugin.tag?
-        swig.setTag $plugin.tag, $plugin.parse, $plugin.compile, $plugin.ends
-      else if $plugin.filter?
-        swig.setFilter $plugin.name, $plugin.filter
+    if _site.plugins?
+      for $name in _site.plugins
+        _plugins.push require($name)
 
     #
     # User plugins
@@ -106,11 +100,6 @@ module.exports = build =
       for $name in fs.readdirSync("#{_site.source}/_plugins")
         $plugin = require("#{_site.source}/_plugins/#{$name}")
         _plugins.push $plugin
-        if $plugin.tag?
-          swig.setTag $plugin.tag, $plugin.parse, $plugin.compile, $plugin.ends
-        else if $plugin.filter?
-          swig.setFilter $plugin.name, $plugin.filter
-
 
     #
     # pre-load data
@@ -150,8 +139,7 @@ module.exports = build =
     # connect to plugins
     #
     for $plugin in _plugins
-      $plugin.connect? _site, build
-      $plugin.generate? _site, build
+      $plugin Liquid, _site, build
 
     #
     # process all posts
@@ -349,10 +337,11 @@ _render = ($template, $extra = {}) ->
     for $key, $val of $extra
       $page[$key] = $val
 
-    $buf = swig.render($page.content, filename: $template, locals: page: $page, site: _site, paginator: _paginator)
+    $buf = Liquid.Template.parse($page.content).render(locals: page: $page, site: _site, paginator: _paginator)
     if $page.layout?
-      $layout = "#{_site.source}/_layouts/#{$page.layout}.html"
-      $buf = swig.renderFile($layout, content: $buf, page: $page, site: _site, paginator: _paginator)
+      $layout = String(fs.readFileSync("#{_site.source}/_layouts/#{$page.layout}.html"))
+
+      $buf = Liquid.Template.parse($layout).render(content: $buf, page: $page, site: _site, paginator: _paginator)
 
     $buf
 
