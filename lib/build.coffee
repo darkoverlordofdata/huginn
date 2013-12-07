@@ -16,6 +16,10 @@ path = require('path')
 yaml = require('yaml-js')
 liquid = require('./liquid.coffee')
 #
+# path to the Liquid.js distribution
+#
+LIQUID_JS = path.resolve(__dirname, '..', 'liquid.js/dist/liquid.js')
+#
 # valid template filetypes
 #
 TYPES = ['.html', '.xml']
@@ -76,7 +80,7 @@ module.exports = build =
 
     _site = Object.create($config, _site)
 
-    Liquid = liquid(path.resolve(_site.source, '_includes'))
+    Liquid = liquid(LIQUID_JS, "#{_site.source}/_includes")
     #
     # load core plugins:
     #
@@ -102,9 +106,9 @@ module.exports = build =
     #
     # User plugins
     #
-    if fs.existsSync("#{_site.source}/$plugins")
-      for $name in fs.readdirSync("#{_site.source}/$plugins")
-        $plugin = require("#{_site.source}/$plugins/#{$name}")
+    if fs.existsSync("#{_site.source}/_plugins")
+      for $name in fs.readdirSync("#{_site.source}/_plugins")
+        $plugin = require("#{_site.source}/_plugins/#{$name}")
         $plugins.push $plugin
 
     #
@@ -142,10 +146,16 @@ module.exports = build =
     fs.mkdirSync "#{_site.destination}/assets" unless fs.existsSync("#{_site.destination}/assets")
 
     #
-    # connect to plugins
+    # initialize plugins
     #
     for $plugin in $plugins
       $plugin Liquid, _site, build
+
+    #
+    # process all pages
+    #
+    for $file in fs.readdirSync(_site.source)
+      _generate_pages $file unless $file[0] is '_' #
 
     #
     # process all posts
@@ -161,11 +171,6 @@ module.exports = build =
       for $file in fs.readdirSync("#{_site.source}/_posts")
         _generate_post $file
 
-    #
-    # process all pages
-    #
-    for $file in fs.readdirSync(_site.source)
-      _generate_pages $file unless $file[0] is '_'#
 
   url: ($path) ->
     _post_url $path
@@ -243,6 +248,7 @@ _generate_post = ($path) ->
   $tmp = path.normalize("#{_site.source}/_posts/#{$path}")
   $out = path.normalize("#{_site.destination}/#{$yy}/#{$mm}/#{$dd}/#{$slug}")
 
+  console.log $out
   fs.writeFileSync $out, _render($tmp)
 
 #
@@ -333,23 +339,25 @@ _parse_url = ($template) ->
 # @param  [String]  extra page data
 # @return none
 #
-_render = ($template, $extra = {}) ->
+_render = ($template, $extra) ->
 
   #
   # Make sure it's a template
   #
   if path.extname($template) in TYPES
-      $page = _load_page($template)
-    for $key, $val of $extra
-      $page[$key] = $val
+    $page = _load_page($template, $extra)
 
-    $buf = Liquid.Template.parse($page.content).render(locals: page: $page, site: _site, paginator: _paginator)
+    $buf = Liquid.Template
+    .parse($page.content)
+    .render(page: $page, site: _site, paginator: _paginator)
+
     if $page.layout?
+
       $layout = String(fs.readFileSync("#{_site.source}/_layouts/#{$page.layout}.html"))
 
-      $buf = Liquid.Template.parse($layout).render(content: $buf, page: $page, site: _site, paginator: _paginator)
-
-    $buf
+      $buf = Liquid.Template
+      .parse($layout)
+      .render(content: $buf, page: $page, site: _site, paginator: _paginator)
 
   else fs.readFileSync($template)
 
@@ -360,7 +368,7 @@ _render = ($template, $extra = {}) ->
 # @param  [String]  page
 # @return none
 #
-_load_page = ($template) ->
+_load_page = ($template, $extra = {}) ->
 
   $fm = null
 
@@ -390,6 +398,10 @@ _load_page = ($template) ->
 
   for $key, $val of $fm
     $page[$key] = $val
+
+  for $key, $val of $extra
+    $page[$key] = $val
+
   $page
 
 
