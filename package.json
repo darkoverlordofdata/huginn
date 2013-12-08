@@ -1,6 +1,6 @@
 {
   "name": "huginn",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Static blog pages",
   "keywords": [
     "static blog",
@@ -14,7 +14,7 @@
     }
   ],
   "dependencies": {
-    "yaml-js": "0.0.9",
+    "yaml-js": "0.0.8",
     "huginn-asset-bundler": "*",
     "huginn-tag-cloud": "*",
     "highlight.js": "~7.5.0"
@@ -26,7 +26,11 @@
   "bin": {
     "huginn": "./bin/huginn"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*",
+    "async": "*"
+  },
   "repository": "git://github.com/darkoverlordofdata/huginn",
   "main": "index",
   "engines": {

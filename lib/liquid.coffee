@@ -37,11 +37,9 @@ module.exports = ($liquidjs, $source, $lang='en') ->
   #
   # Fabricate a document object for strftime
   #
-  Object.defineProperties @,
-    document:
-      get: ->
-        getElementsByTagName: ($name) ->
-          if $name is 'html' then [lang: $lang] else []
+  document =
+    getElementsByTagName: ($name) ->
+      if $name is 'html' then [lang: $lang] else []
 
   #
   # Now we can safely load Liquid.js
