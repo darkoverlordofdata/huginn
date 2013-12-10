@@ -14,22 +14,23 @@
 fs = require('fs')
 path = require('path')
 yaml = require('yaml-js')
-liquid = require('./liquid.coffee')
-#
-# path to the Liquid.js distribution
-#
-LIQUID_JS = path.resolve(__dirname, '..', 'liquid.js/dist/liquid.js')
+Liquid = require('huginn-liquid')
+
 #
 # valid template filetypes
 #
 TYPES = ['.html', '.xml']
-#
-# Liquid.js module
-#
-Liquid      = null
 
 _site       = {}  # Site object tree
 _paginator  = {}  # Pagination object
+
+class LocalFileSystem
+
+  constructor: (@root) ->
+
+  readTemplateFile: ($template) ->
+    String(fs.readFileSync(path.resolve(@root, $template)))
+
 
 
 module.exports = build =
@@ -80,12 +81,10 @@ module.exports = build =
 
     _site = Object.create($config, _site)
 
-    Liquid = liquid(LIQUID_JS, "#{_site.source}/_includes")
     #
-    # load core plugins:
+    #   Initialize Liquid
     #
-    #   Filters
-    #
+    Liquid.Template.fileSystem = new LocalFileSystem("#{_site.source}/_includes")
     Liquid.Template.registerFilter require("#{__dirname}/filters.coffee")
     #
     #   Tags
@@ -162,7 +161,6 @@ module.exports = build =
     #
     for $file in fs.readdirSync("#{_site.source}/_posts")
       _generate_post $file
-
 
     #
     # process drafts
@@ -359,6 +357,7 @@ _render = ($template, $extra) ->
       .parse($layout)
       .render(content: $buf, page: $page, site: _site, paginator: _paginator)
 
+    else $buf
   else fs.readFileSync($template)
 
 #
