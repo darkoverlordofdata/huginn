@@ -15,12 +15,14 @@ fs = require('fs')
 path = require('path')
 yaml = require('yaml-js')
 Liquid = require('huginn-liquid')
-
+Site = require('./classes/Site')
+Page = require('./classes/Page')
 #
 # valid template filetypes
 #
-TYPES = ['.html', '.xml']
+TYPES = ['.html', '.xml', '.md', 'markdown']
 
+_util       = null
 _site       = {}  # Site object tree
 _paginator  = {}  # Pagination object
 
@@ -42,44 +44,8 @@ module.exports = build =
 #
   run: ($args) ->
 
-    $cfg = if '--dev' in $args then 'config-dev.yml' else 'config.yml'
-    $root = process.cwd()
-    if fs.existsSync("#{$root}/#{$cfg}")
-      $config = yaml.load(fs.readFileSync("#{$root}/#{$cfg}"))
-    else
-      process.exit console.log("ERR: Huginn config file #{$cfg} not found")
-
-    if not fs.existsSync($config.source)
-      process.exit console.log("ERR: Huginn source directory #{$config.source} not found")
-
-
-
-    #
-    # Inialize the site object from configuration
-    #
-    _site =
-      date:
-        writable: false, value: new Date()
-      time:
-        writable: false, value: (new Date()).getTime()
-      pages:
-        writable: false, value: []
-      posts:
-        writable: false, value: []
-      related_posts:
-        writable: false, value: []
-      categories:
-        writable: false, value: []
-      tags:
-        writable: false, value: []
-      data:
-        writable: false, value: {}
-      source:
-        writable: false, value: path.resolve($root, $config.source)
-      destination:
-        writable: false, value: path.resolve($root, $config.destination)
-
-    _site = Object.create($config, _site)
+    _site = new Site('--dev' in $args)
+    Page.util = _site.util
 
     #
     #   Initialize Liquid
@@ -196,6 +162,9 @@ _generate_pages = ($tpl, $folder = '') ->
       _generate_pages $file, "#{$folder}/#{$tpl}"
 
   else if $stats.isFile()
+    $out = $out
+    .replace(/\.md$/, '.html')
+    .replace(/\.markdown$/, '.html')
     console.log $out
     if path.extname($tmp) in TYPES
       fs.writeFileSync $out, _render($tmp)
@@ -223,7 +192,8 @@ _load_pages = ($path, $folder = '') ->
 
   else if $stats.isFile()
     if path.extname($src) in TYPES
-      _site.pages.push _load_page($src)
+      #_site.pages.push _load_page($src)
+      _site.pages.push new Page($src)
 
 
 #
@@ -257,7 +227,8 @@ _generate_post = ($path) ->
 #
 _load_post = ($path) ->
   $src = path.normalize("#{_site.source}/_posts/#{$path}")
-  _site.posts.unshift _load_page($src)
+  #_site.posts.unshift _load_page($src)
+  _site.posts.unshift new Page($src)
 
 
 #
@@ -343,7 +314,8 @@ _render = ($template, $extra) ->
   # Make sure it's a template
   #
   if path.extname($template) in TYPES
-    $page = _load_page($template, $extra)
+    #$page = _load_page($template, $extra)
+    $page = new Page($template, $extra)
 
     $buf = Liquid.Template
     .parse($page.content)

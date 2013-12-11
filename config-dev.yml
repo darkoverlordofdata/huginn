@@ -15,8 +15,8 @@
 #
 # Use with huginn serve --dev
 #
-name: "Huginn"
-description: "Static Site Generator"
+name: dark overlord of data
+description: On, Hekyll! On, Jekyll! On Huginn and Muninn!
 url: http://localhost/
 port: 0xd16a
 

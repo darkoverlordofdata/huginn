@@ -1,31 +1,32 @@
 #+--------------------------------------------------------------------+
-#| liquid-test.coffee
+#| huginn-test.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #|
-#| This file is a part of liquid.coffee
+#| This file is a part of Huginn
 #|
-#| liquid.coffee is free software; you can copy, modify, and distribute
+#| Huginn is free software; you can copy, modify, and distribute
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
-#	liquid.js spec
+#	Huginn spec
 #
 #
 #
-Liquid = do ->
-  document =
-    getElementsByTagName: ($name) ->
-      if $name is 'html' then [lang: 'en'] else []
+fs = require('fs')
+path = require('path')
+Liquid = require('huginn-liquid')
 
-  fs = require('fs')
-  eval String(fs.readFileSync("#{__dirname}/../liquid.js/dist/liquid.js"))
-  Liquid
-
-render = ($src, $ctx) ->
-  Liquid.parse($src).renderWithErrors($ctx)
+_lib = path.resolve(__dirname, '..', 'lib')
+Liquid.Template.registerFilter require("#{_lib}/filters.coffee")
+#
+#   Tags
+#
+for $name in fs.readdirSync("#{_lib}/tags")
+  $tag = require("#{_lib}/tags/#{$name}")
+  $tag Liquid, _site, build
 
 
 #? -------------------------------------------------------------------+
