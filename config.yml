@@ -13,12 +13,23 @@
 #
 # Production configuration
 #
+
 name: dark overlord of data
 description: On, Hekyll! On, Jekyll! On Huginn and Muninn!
 url: http://darkoverlordofdata.com/huginn
 
 source: ./source
 destination: ../gh-pages
+
+markdown:
+  - '.md'
+  - '.markdown'
+
+template:
+  - '.html'
+  - '.xml'
+  - '.md'
+  - '.markdown'
 
 plugins:
   - huginn-asset-bundler

@@ -16,6 +16,8 @@
 #
 fs = require('fs')
 path = require('path')
+yaml = require('yaml-js')
+
 
 module.exports = class Configuration
 

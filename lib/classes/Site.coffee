@@ -48,9 +48,9 @@ module.exports = class Site
       config:
         writable: false, value: $config
       source:
-        writable: false, value: path.resolve($root, $config.source)
+        writable: false, value: path.resolve(process.cwd(), $config.source)
       destination:
-        writable: false, value: path.resolve($root, $config.destination)
+        writable: false, value: path.resolve(process.cwd(), $config.destination)
 
     for $key, $value of $config
       @[$key] = $value unless 'function' is typeof @[$key]

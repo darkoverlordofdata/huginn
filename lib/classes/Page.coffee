@@ -1,9 +1,7 @@
 fs = require('fs')
 path = require('path')
 yaml = require('yaml-js')
-markdown = require('markdown').markdown
 
-MD_TYPES = ['.md', 'markdown']
 
 module.exports = class Page
 
@@ -29,20 +27,18 @@ module.exports = class Page
   #
   constructor: ($site, $template, $extra = {}) ->
 
-    $fm = null
-
-    $ext = path.extname($template)
+    $hdr = null
     $buf = String(fs.readFileSync($template))
 
     if $buf[0..3] is '---\n'
-      # pull out the front matter and parse with yaml
+      # pull out the header and parse with yaml
       $buf = $buf.split('---\n')
-      $fm = yaml.load($buf[1])
+      $hdr = yaml.load($buf[1])
       $buf = $buf[2]
 
 
     @categories = []
-    @content = if $ext in MD_TYPES then markdown.toHTML($buf) else $buf
+    @content = $buf
     @date = new Date
     @tags = []
     @url = $site.parseUrl($template).path
@@ -50,7 +46,7 @@ module.exports = class Page
     if ($url = $site.parseUrl($template)).post
       @date = new Date($url.yyyy, $url.mm, $url.dd)
 
-    for $key, $val of $fm
+    for $key, $val of $hdr
       @[$key] = $val
 
     for $key, $val of $extra
