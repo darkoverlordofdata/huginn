@@ -16,17 +16,7 @@ path = require('path')
 yaml = require('yaml-js')
 Liquid = require('huginn-liquid')
 Site = require('./classes/Site')
-#
-# valid template filetypes
-#
-class LocalFileSystem
-
-  constructor: (@root) ->
-
-  readTemplateFile: ($template) ->
-    String(fs.readFileSync(path.resolve(@root, $template)))
-
-
+LocalFileSystem = require('./classes/LocalFileSystem')
 
 module.exports =
 #
@@ -38,6 +28,7 @@ module.exports =
   run: ($args) ->
 
     $site = new Site('--dev' in $args)
+    $plugins = []
 
     #
     #   Initialize Liquid
@@ -53,7 +44,6 @@ module.exports =
       $tag Liquid, $site, $site
 
 
-    $plugins = []
     #
     # System plugins
     #

@@ -16,26 +16,21 @@ fs = require('fs')
 path = require('path')
 yaml = require('yaml-js')
 Page = require('./Page')
+Configuration = require('./Configuration')
 Liquid = require('huginn-liquid')
+markdown = require('markdown').markdown
+
 
 
 
 module.exports = class Site
 
-  TYPES = ['.html', '.xml', '.md', 'markdown']
+  MARKDOWN_TYPES = ['.md', 'markdown']
+  TEMPLATE_TYPES = ['.html', '.xml'].concat(MARKDOWN_TYPES)
 
   constructor: ($dev = true) ->
 
-    $cfg = if $dev then 'config-dev.yml' else 'config.yml'
-    $root = process.cwd()
-    if fs.existsSync("#{$root}/#{$cfg}")
-      $config = yaml.load(fs.readFileSync("#{$root}/#{$cfg}"))
-    else
-      process.exit console.log("ERR: Huginn config file #{$cfg} not found")
-
-    if not fs.existsSync($config.source)
-      process.exit console.log("ERR: Huginn source directory #{$config.source} not found")
-
+    $config = new Configuration($dev)
     #
     # Inialize the site object from configuration
     #
@@ -137,7 +132,7 @@ module.exports = class Site
         @loadPage $f, "#{$folder}/#{$path}"
 
     else if $stats.isFile()
-      if path.extname($src) in TYPES
+      if path.extname($src) in TEMPLATE_TYPES
         @pages.push new Page(@, $src)
 
   #
@@ -163,8 +158,9 @@ module.exports = class Site
     #
     # Make sure it's a template
     #
-    if path.extname($template) in TYPES
+    if ($ext = path.extname($template)) in TEMPLATE_TYPES
       $page = new Page(@, $template, $extra)
+      $page.content = markdown.toHTML($page.content) if $ext in MARKDOWN_TYPES
 
       $buf = Liquid.Template
       .parse($page.content)
@@ -206,7 +202,7 @@ module.exports = class Site
       .replace(/\.md$/, '.html')
       .replace(/\.markdown$/, '.html')
       console.log $out
-      if path.extname($tmp) in TYPES
+      if path.extname($tmp) in TEMPLATE_TYPES
         fs.writeFileSync $out, @render($tmp)
       else
         $bin = fs.createWriteStream($out)

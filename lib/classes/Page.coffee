@@ -7,8 +7,6 @@ MD_TYPES = ['.md', 'markdown']
 
 module.exports = class Page
 
-  @site = null
-
   category: ''
   categories: null
   content: ''
