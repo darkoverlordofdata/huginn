@@ -20,13 +20,7 @@ Configuration = require('./Configuration')
 Liquid = require('huginn-liquid')
 markdown = require('markdown').markdown
 
-
-
-
 module.exports = class Site
-
-  MARKDOWN_TYPES = ['.md', 'markdown']
-  TEMPLATE_TYPES = ['.html', '.xml'].concat(MARKDOWN_TYPES)
 
   constructor: ($dev = true) ->
 
@@ -59,7 +53,7 @@ module.exports = class Site
         writable: false, value: path.resolve($root, $config.destination)
 
     for $key, $value of $config
-      @[$key] = $value
+      @[$key] = $value unless 'function' is typeof @[$key]
 
 
   #
@@ -132,7 +126,7 @@ module.exports = class Site
         @loadPage $f, "#{$folder}/#{$path}"
 
     else if $stats.isFile()
-      if path.extname($src) in TEMPLATE_TYPES
+      if path.extname($src) in @template
         @pages.push new Page(@, $src)
 
   #
@@ -158,9 +152,9 @@ module.exports = class Site
     #
     # Make sure it's a template
     #
-    if ($ext = path.extname($template)) in TEMPLATE_TYPES
+    if ($ext = path.extname($template)) in @template
       $page = new Page(@, $template, $extra)
-      $page.content = markdown.toHTML($page.content) if $ext in MARKDOWN_TYPES
+      $page.content = markdown.toHTML($page.content) if $ext in @markdown
 
       $buf = Liquid.Template
       .parse($page.content)
@@ -202,7 +196,7 @@ module.exports = class Site
       .replace(/\.md$/, '.html')
       .replace(/\.markdown$/, '.html')
       console.log $out
-      if path.extname($tmp) in TEMPLATE_TYPES
+      if path.extname($tmp) in @template
         fs.writeFileSync $out, @render($tmp)
       else
         $bin = fs.createWriteStream($out)
