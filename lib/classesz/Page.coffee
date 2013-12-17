@@ -24,12 +24,11 @@ module.exports = class Page
   #
   # Load template data
   #
-  # @param  [Object]  site parent
   # @param  [String]  template
   # @param  [String]  page
   # @return none
   #
-  constructor: ($site, $template, $extra = {}) ->
+  constructor: ($template, $extra = {}) ->
 
     $fm = null
 
@@ -47,9 +46,9 @@ module.exports = class Page
     @content = if $ext in MD_TYPES then markdown.toHTML($buf) else $buf
     @date = new Date
     @tags = []
-    @url = $site.parseUrl($template).path
+    @url = Page.util.parseUrl($template).path
 
-    if ($url = $site.parseUrl($template)).post
+    if ($url = Page.util.parseUrl($template)).post
       @date = new Date($url.yyyy, $url.mm, $url.dd)
 
     for $key, $val of $fm

@@ -15,9 +15,14 @@
 fs = require('fs')
 path = require('path')
 yaml = require('yaml-js')
+Page = require('./Page')
+Liquid = require('huginn-liquid')
+
 
 
 module.exports = class Site
+
+  TYPES = ['.html', '.xml', '.md', 'markdown']
 
   constructor: ($dev = true) ->
 
@@ -53,8 +58,6 @@ module.exports = class Site
         writable: false, value: {}
       config:
         writable: false, value: $config
-      util:
-        writable: false, value: new Util(@)
       source:
         writable: false, value: path.resolve($root, $config.source)
       destination:
@@ -64,15 +67,210 @@ module.exports = class Site
       @[$key] = $value
 
 
+  #
+  # Load data file
+  #
+  # @param  [String]  path  data file path
+  # @return none
+  #
+  loadDataFile: ($path) ->
+    $path = path.normalize("#{@source}/_data/#{$path}")
+    $ext = path.extname($path)
+    $name = path.basename($path, $ext)
+    switch $ext
+      when '.yml'     then @data[$name] = yaml.load(fs.readFileSync($path))
+      when '.json'    then @data[$name] = require($path)
+      when '.js'      then @data[$name] = require($path)
+      when '.coffee'  then @data[$name] = require($path)
+      else console.log "WARN: Unknown data format: #{$path}"
 
-class Util
+  #
+  # Load data
+  #
+  # @return none
+  #
+  loadData: () ->
+    if fs.existsSync("#{@source}/_data")
+      for $file in fs.readdirSync("#{@source}/_data")
+        @loadDataFile $file
 
-  constructor: (@site) ->
+  #
+  # Load post data
+  #
+  # @param  [String]  path  template path
+  # @return none
+  #
+  loadPost: ($path) ->
+    $src = path.normalize("#{@source}/_posts/#{$path}")
+    @posts.unshift new Page(@, $src)
 
+  #
+  # Load posts
+  #
+  # @param  [Boolean]  drafts include drafts?
+  # @return none
+  #
+  loadPosts: ($drafts = false) ->
+    if fs.existsSync("#{@source}/_posts")
+      for $file in fs.readdirSync("#{@source}/_posts")
+        @loadPost $file
+
+    if $drafts
+      if fs.existsSync("#{@source}/_drafts")
+        for $file in fs.readdirSync("#{@source}/_drafts")
+          @loadPost $file
+
+  #
+  # Load page data
+  #
+  # @param  [String]  path  template path
+  # @param  [String]  folder  subfolder
+  # @return none
+  #
+  loadPage: ($path, $folder = '') ->
+
+    $src = path.normalize("#{@source}/#{$folder}/#{$path}")
+    $stats = fs.statSync($src)
+
+    if $stats.isDirectory()
+      for $f in fs.readdirSync($src)
+        @loadPage $f, "#{$folder}/#{$path}"
+
+    else if $stats.isFile()
+      if path.extname($src) in TYPES
+        @pages.push new Page(@, $src)
+
+  #
+  # Load pages
+  #
+  # @return none
+  #
+  loadPages: () ->
+    for $file in fs.readdirSync(@source)
+      @loadPage $file unless $file[0] is '_'
+
+
+  #
+  #
+  # Render a template, create output at path
+  #
+  # @param  [String]  template
+  # @param  [String]  extra page data
+  # @return none
+  #
+  render: ($template, $extra) ->
+
+    #
+    # Make sure it's a template
+    #
+    if path.extname($template) in TYPES
+      $page = new Page(@, $template, $extra)
+
+      $buf = Liquid.Template
+      .parse($page.content)
+      .render(page: $page, site: @, paginator: null)
+
+      if $page.layout?
+
+        $layout = String(fs.readFileSync("#{@source}/_layouts/#{$page.layout}.html"))
+
+        $buf = Liquid.Template
+        .parse($layout)
+        .render(content: $buf, page: $page, site: @, paginator: null)
+
+      else $buf
+    else fs.readFileSync($template)
+
+  #
+  # Generate page
+  #
+  # @param  [String]  tpl template
+  # @param  [String]  folder  subfolder
+  # @return none
+  #
+  generatePage: ($tpl, $folder = '') ->
+  
+    $tmp = path.normalize("#{@source}/#{$folder}/#{$tpl}")
+    $out = path.normalize("#{@destination}/#{$folder}/#{$tpl}")
+  
+    $stats = fs.statSync($tmp)
+  
+    if $stats.isDirectory()
+  
+      fs.mkdirSync $out unless fs.existsSync($out)
+      for $file in fs.readdirSync($tmp)
+        @generatePage $file, "#{$folder}/#{$tpl}"
+  
+    else if $stats.isFile()
+      $out = $out
+      .replace(/\.md$/, '.html')
+      .replace(/\.markdown$/, '.html')
+      console.log $out
+      if path.extname($tmp) in TYPES
+        fs.writeFileSync $out, @render($tmp)
+      else
+        $bin = fs.createWriteStream($out)
+        $bin.write fs.readFileSync($tmp)
+        $bin.end()
+
+
+  #
+  # Generate pages
+  #
+  # @return none
+  #
+  generatePages: () ->
+    for $file in fs.readdirSync(@source)
+      @generatePage $file unless $file[0] is '_' #
+
+
+  #
+  # Generate a post from template
+  #
+  # @param  [String]  path  template path
+  # @return none
+  #
+  generatePost: ($path) ->
+    $seg = $path.split('-')
+    $yy = $seg.shift()
+    $mm = $seg.shift()
+    $dd = $seg.shift()
+    $slug = $seg.join('-')
+  
+    fs.mkdirSync "#{@destination}/#{$yy}" unless fs.existsSync("#{@destination}/#{$yy}")
+    fs.mkdirSync "#{@destination}/#{$yy}/#{$mm}" unless fs.existsSync("#{@destination}/#{$yy}/#{$mm}")
+    fs.mkdirSync "#{@destination}/#{$yy}/#{$mm}/#{$dd}" unless fs.existsSync("#{@destination}/#{$yy}/#{$mm}/#{$dd}")
+  
+    $tmp = path.normalize("#{@source}/_posts/#{$path}")
+    $out = path.normalize("#{@destination}/#{$yy}/#{$mm}/#{$dd}/#{$slug}")
+  
+    console.log $out
+    fs.writeFileSync $out, @render($tmp)
+
+  #
+  # Generate posts from template
+  #
+  # @param  [Boolean]  drafts include drafts?
+  # @return none
+  #
+  generatePosts: ($drafts = false) ->
+    for $file in fs.readdirSync("#{@source}/_posts")
+      @generatePost $file
+    if $drafts
+      for $file in fs.readdirSync("#{@source}/_posts")
+        @generatePost $file
+
+
+  #
+  # Parse url
+  #
+  # @param  [String]  template path to parse
+  # @return none
+  #
   parseUrl: ($template) ->
 
-    if $template.indexOf(@site.source) is 0
-      $template = $template.substr(@site.source.length)
+    if $template.indexOf(@source) is 0
+      $template = $template.substr(@source.length)
     if $template[0] is '/'
       $template = $template.substr(1)
 
