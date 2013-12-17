@@ -7,27 +7,21 @@ active: home
 
 pronounced "HOO-gin"
 
-"On, Hekyll! On, Jekyll! On Huginn and Muninn!"
-
 Static Page generator
 
 ## Quick Start
 
 ### Install
 
-```bash
-$ sudo npm install huginn -g
-```
+    $ sudo npm install huginn -g
 
 
 ### Create a new application
 
-```bash
-$ huginn create <appname>
-$ cd <appname>
-$ huginn build
-$ huginn serve
-```
+    $ huginn create <appname>
+    $ cd <appname>
+    $ huginn build
+    $ huginn serve
 
 ### Usage
 
@@ -53,7 +47,7 @@ named differently,so that I can (hopefull) run both side by side.
 
 (The MIT License)
 
-Copyright (c) 2012 - 2013 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
+Copyright (c) 2012 - 2013 Bruce Davidson <darkoverlordofdata@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

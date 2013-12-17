@@ -34,8 +34,7 @@ module.exports =
 #
   run: ($appname) ->
 
-    $cwd = process.cwd()
-    $path = path.resolve($cwd, $appname)
+    $path = path.resolve(process.cwd(), $appname)
     
 
     $config = """
@@ -47,6 +46,17 @@ module.exports =
 
       port: #{PORT}
       url: http://#{$appname}.com
+
+      markdown:
+        - '.md'
+        - '.markdown'
+
+      template:
+        - '.html'
+        - '.xml'
+        - '.md'
+        - '.markdown'
+
     """
     console.log "Creating #{$appname}..."
 

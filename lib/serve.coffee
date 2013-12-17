@@ -15,6 +15,7 @@ fs = require('fs')
 path = require('path')
 yaml = require('yaml-js')
 express = require('express')
+Configuration = require('./classes/Configuration')
 
 
 module.exports =
@@ -26,25 +27,17 @@ module.exports =
 #
   run: ($args) ->
 
-    $cfg = if '--dev' in $args then 'config-dev.yml' else 'config.yml'
-    $root = process.cwd()
-    if fs.existsSync("#{$root}/#{$cfg}")
-      $config = yaml.load(fs.readFileSync("#{$root}/#{$cfg}"))
-    else
-      process.exit console.log("ERR: Huginn config file #{$cfg} not found")
-
-    if not fs.existsSync($config.destination)
-      process.exit console.log("ERR: #{$config.destination} not built")
-
+    $config = new Configuration('--dev' in $args)
     $404 = path.resolve($config.destination, '404.html')
 
     $app = express()
-    $app.set 'port', ($port = $config.port ? 0xd16a)
+    $app.set 'port', $config.port
     $app.use express.favicon()
     $app.use express.logger('dev')
     $app.use express.bodyParser()
     $app.use express.methodOverride()
 
+    $root = process.cwd()
     if $config.serve?
       if 'string' is typeof $config.serve
         $app.use express.static(path.resolve($root, $config.serve))
@@ -61,8 +54,8 @@ module.exports =
     $app.use ($req, $res, $next) ->
       $res.sendfile $404
 
-    $app.listen $port, ->
-      console.log "Express server listening on port #{$port}"
-      console.log "http://localhost:#{$port}"
+    $app.listen $config.port, ->
+      console.log "Express server listening on port #{$config.port}"
+      console.log "http://localhost:#{$config.port}"
 
 
