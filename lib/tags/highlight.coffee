@@ -13,9 +13,10 @@
 #
 # highlight code listing
 #
+Liquid = require('huginn-liquid')
 highlight = require("highlight.js").highlight
 
-module.exports = (Liquid) ->
+module.exports = ($site) ->
 
   class Highlight extends Liquid.Block
 

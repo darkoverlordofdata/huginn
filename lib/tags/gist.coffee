@@ -13,7 +13,9 @@
 #
 # Embed a link to a post specified by the source filename
 #
-module.exports = (Liquid) ->
+Liquid = require('huginn-liquid')
+
+module.exports = ($site) ->
 
   class Gist extends Liquid.Tag
 

@@ -19,8 +19,9 @@
 #
 #   [Hello!]({% post_url 2013-01-01-hello-world %})
 #
+Liquid = require('huginn-liquid')
 
-module.exports = (Liquid, site, build) ->
+module.exports = ($site) ->
 
   class PostUrl extends Liquid.Tag
 
@@ -32,6 +33,6 @@ module.exports = (Liquid, site, build) ->
 
     render: ($ctx) ->
       super
-      build.url(@url)
+      $site.url(@url)
 
   Liquid.Template.registerTag "post_url", PostUrl

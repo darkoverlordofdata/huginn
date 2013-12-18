@@ -41,7 +41,7 @@ module.exports =
     #
     for $name in fs.readdirSync("#{__dirname}/tags")
       $tag = require("#{__dirname}/tags/#{$name}")
-      $tag Liquid, $site, $site
+      $tag $site
 
 
     #
@@ -67,20 +67,16 @@ module.exports =
     $site.loadPages()
 
     #
-    # Build the output
-    #
-    fs.mkdirSync $site.destination unless fs.existsSync($site.destination)
-    fs.mkdirSync "#{$site.destination}/assets" unless fs.existsSync("#{$site.destination}/assets")
-
-    #
     # initialize plugins
     #
     for $plugin in $plugins
-      $plugin Liquid, $site, $site
+      $plugin $site
 
     #
     # generate output
     #
+    fs.mkdirSync $site.destination unless fs.existsSync($site.destination)
+    fs.mkdirSync "#{$site.destination}/assets" unless fs.existsSync("#{$site.destination}/assets")
     $site.generatePages()
     $site.generatePosts('-d' in $args or '--drafts' in $args)
 
