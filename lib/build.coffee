@@ -67,16 +67,12 @@ module.exports =
     $site.loadPages()
 
     #
-    # initialize plugins
-    #
-    for $plugin in $plugins
-      $plugin $site
-
-    #
     # generate output
     #
     fs.mkdirSync $site.destination unless fs.existsSync($site.destination)
     fs.mkdirSync "#{$site.destination}/assets" unless fs.existsSync("#{$site.destination}/assets")
+    for $plugin in $plugins
+      $plugin $site
     $site.generatePages()
     $site.generatePosts('-d' in $args or '--drafts' in $args)
 
