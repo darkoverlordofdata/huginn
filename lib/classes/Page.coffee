@@ -44,7 +44,7 @@ module.exports = class Page
     @url = $site.parseUrl($template).path
 
     if ($url = $site.parseUrl($template)).post
-      @date = new Date($url.yyyy, $url.mm, $url.dd)
+      @date = new Date($url.yyyy, $url.mm-1, $url.dd)
 
     for $key, $val of $hdr
       @[$key] = $val

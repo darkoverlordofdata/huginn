@@ -21,15 +21,9 @@ url: http://darkoverlordofdata.com/huginn
 source: ./source
 destination: ../gh-pages
 
-markdown:
-  - '.md'
-  - '.markdown'
-
-template:
-  - '.html'
-  - '.xml'
-  - '.md'
-  - '.markdown'
+serve:
+  - ../gh-pages
+  - ../../darkoverlordofdata.github.io/master
 
 plugins:
   - huginn-asset-bundler
