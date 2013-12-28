@@ -16,13 +16,14 @@ hugin = require("../lib/huginn")
 
 $usage = """
 Usage:
-  huginn create PATH
+  huginn create PATH [-b <name>]
 
   cd PATH
   huginn build [--drafts] [--dev]
   huginn serve [--dev]
 
 Options:
+  -b  [--branch]    # branch name subfolder, defaults to master
   -d  [--drafts]    # publish _drafts folder
   -h  [--help]      # display this message
   -v  [--version]   # display version

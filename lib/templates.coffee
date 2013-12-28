@@ -16,6 +16,13 @@
 
 module.exports =
 
+  '.gitignore': ->
+    """
+      /.idea
+      /node_modules
+      /gh-pages
+    """
+
   '404':  ->
     """
         {% include "header.html" %}
