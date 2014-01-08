@@ -10,4 +10,6 @@
 ### Version 0.0.15 (1/7/14)
     1   args in build & serve default to []
     2   return correct reference from index.coffee
-    3   add coffee-script dependancy
+    3   add coffee-script dependency
+### Version 0.0.16 (1/7/14)
+    1   add arg: --port n

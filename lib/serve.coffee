@@ -30,8 +30,13 @@ module.exports =
     $config = new Configuration('--dev' in $args)
     $404 = path.resolve($config.destination, '404.html')
 
+    if ($index = $args.indexOf('-p')) isnt -1
+      $config.port = parseInt($args[$index+1])
+    else if ($index = $args.indexOf('--port')) isnt -1
+      $config.port = parseInt($args[$index+1])
+
     $app = express()
-    $app.set 'port', $config.port
+    $app.set 'port',  $config.port
     $app.use express.favicon()
     $app.use express.logger('dev')
     $app.use express.bodyParser()

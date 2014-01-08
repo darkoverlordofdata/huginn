@@ -26,6 +26,7 @@ Options:
   -b  [--branch]    # branch name subfolder, defaults to master
   -d  [--drafts]    # publish _drafts folder
   -h  [--help]      # display this message
+  -p  [--port]      # port to use
   -v  [--version]   # display version
 
   --dev             # use config-dev.yml
