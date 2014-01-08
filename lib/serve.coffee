@@ -25,7 +25,7 @@ module.exports =
 # @param  [Array<String>]  command line args
 # @return none
 #
-  run: ($args) ->
+  run: ($args = []) ->
 
     $config = new Configuration('--dev' in $args)
     $404 = path.resolve($config.destination, '404.html')

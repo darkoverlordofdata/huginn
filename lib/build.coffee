@@ -25,7 +25,7 @@ module.exports =
 # @param  [Array<String>]  command line args
 # @return none
 #
-  run: ($args) ->
+  run: ($args = []) ->
 
     $site = new Site('--dev' in $args)
     $plugins = []

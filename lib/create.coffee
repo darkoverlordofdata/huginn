@@ -28,20 +28,40 @@ module.exports =
 # @param  [String]  appname app to create
 # @return none
 #
-  run: ($project, $use_branch = false, $branch = "master") ->
+  run: ($project, $args...) ->
 
     $path = path.resolve(process.cwd(), $project)
     if fs.existsSync($path)
       process.exit console.log("ERR: the folder #{$path} already exists.")
 
-    console.log "Creating #{$project}..."
+    while ($option = $args.shift())?
 
+      switch $option
+
+        when '-b', '--branch'
+          $use_branch = true
+          $branch = $args.shift()
+
+        when '-d', '--dest'
+          $has_dest = true
+          $dest = $args.shift()
+
+        else
+          throw "ERR: Invalid option #{$option}"
+
+    console.log "Creating #{$project}..."
 
     $readme = """
       # "#{$project}"
     """
 
-    if $use_branch in ['-b', '--branch']
+    if $has_dest
+      $dest ?= switch $branch
+        when "master" then "gh-pages"
+        when "source" then "master"
+        else "www"
+
+    if $use_branch
 
       fs.mkdirSync $path
       $path += '/'+$branch
@@ -51,7 +71,7 @@ module.exports =
         description: "On, Hekyll! On, Jekyll! On Huginn and Muninn!"
 
         source: ./template
-        destination: ../gh-pages
+        destination: ./#{$dest}
 
         port: 0xd16a
         url: http://#{$project}.com
@@ -77,13 +97,13 @@ module.exports =
         description: "On, Hekyll! On, Jekyll! On Huginn and Muninn!"
 
         source: ./template
-        destination: ./gh-pages/#{$project}
+        destination: ./#{$dest}/#{$project}
 
         port: 0xd16a
         url: http://#{$project}.com
 
         serve:
-          - ./gh-pages
+          - ./#{$dest}
           - ../../user_org.github.io/master
 
         plugins:
@@ -109,7 +129,7 @@ module.exports =
         description: "On, Hekyll! On, Jekyll! On Huginn and Muninn!"
 
         source: ./template
-        destination: ./www
+        destination: ./#{$dest}
 
         port: 0xd16a
         url: http://#{$project}.com
@@ -135,13 +155,13 @@ module.exports =
         description: "On, Hekyll! On, Jekyll! On Huginn and Muninn!"
 
         source: ./template
-        destination: ./www
+        destination: ./#{$dest}
 
         port: 0xd16a
         url: http://#{$project}.com
 
         serve:
-          - ./www
+          - ./#{$dest}
 
         plugins:
           - huginn-asset-bundler
@@ -177,8 +197,9 @@ module.exports =
       {path: "#{$path}/readme.md",                        content: $readme}
       {path: "#{$path}/config.yml",                       content: $config}
       {path: "#{$path}/config-dev.yml",                   content: $config_dev}
-      {path: "#{$path}/template/CNAME",                   content: "#{$project}.com"}
+      {path: "#{$path}/template/.gitignore",              content: '.gitignore'}
       {path: "#{$path}/template/404.html",                content: '404'}
+      {path: "#{$path}/template/CNAME",                   content: "#{$project}.com"}
       {path: "#{$path}/template/index.html",              content: 'index'}
       {path: "#{$path}/template/_layouts/default.html",   content: 'layouts_default'}
       {path: "#{$path}/template/_layouts/post.html",      content: 'layouts_post'}

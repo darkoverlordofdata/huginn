@@ -11,5 +11,5 @@
 #|
 #+--------------------------------------------------------------------+
 #
-require('./lib/huginn').main()
+module.exports = require('./lib/huginn')
 
