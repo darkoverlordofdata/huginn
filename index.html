@@ -7,8 +7,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link rel='stylesheet' type='text/css' href='/huginn/assets/20026ec0a9596753c220ef4e24c1da68.css' />
+    <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap.min.css' type='text/css'/>
+    <link rel='stylesheet' type='text/css' href='/huginn/assets/dd7784d8e0cbd341100a792e75d5b784.css' />
 
+    <link rel='stylesheet' href='//cdn.darkoverlordofdata.com/css/bootstrap-responsive.min.css' type='text/css'/>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -55,6 +57,8 @@
 
 <p>pronounced &quot;HOO-gin&quot;</p>
 
+<p>&quot;On, Hekyll! On, Jekyll! On Huginn and Muninn!&quot;</p>
+
 <p>Static Page generator</p>
 
 <h2>Quick Start</h2>
@@ -70,6 +74,25 @@ $ cd &lt;appname&gt;
 $ huginn build
 $ huginn serve</code></pre>
 
+<h3>Blog Conversion</h3>
+
+<p>I started using Jekyll, but I don&#39;t enjoy using Ruby. So I created Huginn.
+Huginn uses liquid templates, and has the same folder structures. The config file is
+named differently, so that I can run both side by side during conversion.</p>
+
+<h3>Serving Generated Pages</h3>
+
+<p>Huginn was created to use on github. The Huginn github pages were generated with Huginn.
+Huginn works on Heroku, too. Run npm install in the project folder.
+An embedded copy of huginn will serve the generated static pages.</p>
+
+<pre><code>$ huginn create &lt;appname&gt;
+$ cd &lt;appname&gt;
+$ npm install
+$ huginn build
+$ foreman start
+$ git push heroku master</code></pre>
+
 <h3>Usage</h3>
 
 <pre><code>Usage:
@@ -80,40 +103,13 @@ $ huginn serve</code></pre>
   huginn serve
 
 Options:
+  -b  [--branch]    # branch name subfolder, defaults to master
   -d  [--drafts]    # publish _drafts folder
   -h  [--help]      # display this message
-  -v  [--version]   # display version</code></pre>
+  -p  [--port]      # port to use
+  -v  [--version]   # display version
 
-<h3>Blog Conversion</h3>
-
-<p>I started using Jekyll, but I don&#39;t enjoy using Ruby. So I created Huginn.
-Huginn uses Liquid.js, and has the same folder structures. The config file is
-named differently,so that I can (hopefull) run both side by side.</p>
-
-<h2>License</h2>
-
-<p>(The MIT License)</p>
-
-<p>Copyright (c) 2012 - 2013 Bruce Davidson <a href="mailto:darkoverlordofdata@gmail.com">darkoverlordofdata@gmail.com</a></p>
-
-<p>Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-&#39;Software&#39;), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:</p>
-
-<p>The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.</p>
-
-<p>THE SOFTWARE IS PROVIDED &#39;AS IS&#39;, WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+  --dev             # use config-dev.yml</code></pre>
     </div>
 </div>
 
@@ -128,7 +124,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
         <i class="icon icon-octocat"></i></a>
 </p>
 </div>
-<script type='text/javascript' src='/huginn/assets/163a6430b41e0249342cff1919173162.js'></script>
-
+<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js" ></script>
+<script type="text/javascript" src="//cdn.darkoverlordofdata.com/js/bootstrap.min.js" ></script>
 </body>
 </html>
