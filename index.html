@@ -53,63 +53,71 @@
 
 <div class="row-fluid">
     <div class="span12">
-        <h1>Huginn</h1>
+        <h2>Huginn Static Page Generator</h2>
+<br />
+<p>I started using Jekyll, but I don&#39;t enjoy programming in Ruby. So I created Huginn with Coffee-Script.
+    Huginn uses liquid templates, and has the same folder structures and configuration.</p>
 
-<p>pronounced &quot;HOO-gin&quot;</p>
 
-<p>&quot;On, Hekyll! On, Jekyll! On Huginn and Muninn!&quot;</p>
-
-<p>Static Page generator</p>
-
-<h2>Quick Start</h2>
-
-<h3>Install</h3>
+<br />
+<h2>Install</h2>
+<br />
 
 <pre><code>$ sudo npm install huginn -g</code></pre>
 
-<h3>Create a new application</h3>
+<br />
+<h2>Create a new application</h2>
+<br />
 
 <pre><code>$ huginn create &lt;appname&gt;
-$ cd &lt;appname&gt;
-$ huginn build
-$ huginn serve</code></pre>
+    $ cd &lt;appname&gt;
+    $ huginn build
+    $ huginn serve</code></pre>
 
-<h3>Blog Conversion</h3>
+<br />
+<h2>Serving Generated Pages</h2>
+<br />
 
-<p>I started using Jekyll, but I don&#39;t enjoy using Ruby. So I created Huginn.
-Huginn uses liquid templates, and has the same folder structures. The config file is
-named differently, so that I can run both side by side during conversion.</p>
-
-<h3>Serving Generated Pages</h3>
-
-<p>Huginn was created to use on github. The Huginn github pages were generated with Huginn.
-Huginn works on Heroku, too. Run npm install in the project folder.
-An embedded copy of huginn will serve the generated static pages.</p>
+<h4>Local</h4>
+<p>Run huginn locally for testing purposes</p>
 
 <pre><code>$ huginn create &lt;appname&gt;
-$ cd &lt;appname&gt;
-$ npm install
-$ huginn build
-$ foreman start
-$ git push heroku master</code></pre>
+    $ huginn build --dev
+    $ huginn serve --dev</code></pre>
+        
+<h4>Server</h4>
+<p>Huginn was designed to create github pages. 
+    The Huginn project github pages were generated with Huginn.
+    Huginn works on Heroku, too. Run npm install in the project folder.
+    An embedded copy of huginn will serve the generated static pages.</p>
 
-<h3>Usage</h3>
+<pre><code>$ huginn create &lt;appname&gt;
+    $ cd &lt;appname&gt;
+    $ npm install
+    $ huginn build
+    $ foreman start
+    $ git push heroku master</code></pre>
+
+<br />
+<h2>Usage</h2>
+<br />
 
 <pre><code>Usage:
-  huginn create PATH
+    huginn create PATH
 
-  cd PATH
-  huginn build [--drafts]
-  huginn serve
+    cd PATH
+    huginn build [--drafts]
+    huginn serve
 
-Options:
-  -b  [--branch]    # branch name subfolder, defaults to master
-  -d  [--drafts]    # publish _drafts folder
-  -h  [--help]      # display this message
-  -p  [--port]      # port to use
-  -v  [--version]   # display version
+    Options:
+    -b  [--branch]    # branch name subfolder, defaults to master
+    -d  [--drafts]    # publish _drafts folder
+    -h  [--help]      # display this message
+    -p  [--port]      # port to use
+    -v  [--version]   # display version
 
-  --dev             # use config-dev.yml</code></pre>
+    --dev             # use config-dev.yml</code></pre>
+
     </div>
 </div>
 
