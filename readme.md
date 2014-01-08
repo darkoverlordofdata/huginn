@@ -23,7 +23,7 @@ $ huginn build
 $ huginn serve
 ```
 
-(More...) [http://darkoverlordofdata.com/huginn/]
+#### (More...) [http://darkoverlordofdata.com/huginn/]
 
 ### Usage
 
