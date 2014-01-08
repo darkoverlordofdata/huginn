@@ -8,6 +8,13 @@ body {
     margin: 0 auto;
     max-width: 800px;
 }
+
+.icon-octocat {
+    background-size: 100%;
+    background-image: url("//cdn.darkoverlordofdata.com/images/GitHub-Mark-32px.png");
+    background-position: center center;
+}
+
 a.no-link:hover,a.no-link:focus,a.no-link{color:#333;text-decoration:none;}
 
 .set-1 {font-size: 8pt;}

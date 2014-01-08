@@ -13,3 +13,5 @@
     3   add coffee-script dependency
 ### Version 0.0.16 (1/7/14)
     1   add arg: --port n
+### Version 0.1.0 (1/7/14)
+    1   Release

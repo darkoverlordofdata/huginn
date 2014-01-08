@@ -1,5 +1,4 @@
 # Huginn
-
 pronounced "HOO-gin"
 
 "On, Hekyll! On, Jekyll! On Huginn and Muninn!"
@@ -24,6 +23,8 @@ $ huginn build
 $ huginn serve
 ```
 
+(More...) [http://darkoverlordofdata.com/huginn/]
+
 ### Usage
 
     Usage:
@@ -34,15 +35,15 @@ $ huginn serve
       huginn serve
 
     Options:
+      -b  [--branch]    # branch name subfolder, defaults to master
       -d  [--drafts]    # publish _drafts folder
       -h  [--help]      # display this message
+      -p  [--port]      # port to use
       -v  [--version]   # display version
 
-### Blog Conversion
+      --dev             # use config-dev.yml
 
-I started using Jekyll, but I don't enjoy using Ruby. So I created Huginn.
-Huginn uses Liquid.js, and has the same folder structures. The config file is
-named differently,so that I can (hopefull) run both side by side.
+
 
 ## License
 

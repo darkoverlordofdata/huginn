@@ -1,0 +1,68 @@
+---
+layout: default
+active: home
+---
+<h2>Huginn Static Page Generator</h2>
+<br />
+<p>I started using Jekyll, but I don&#39;t enjoy programming in Ruby. So I created Huginn with Coffee-Script.
+    Huginn uses liquid templates, and has the same folder structures and configuration.</p>
+
+
+<br />
+<h2>Install</h2>
+<br />
+
+<pre><code>$ sudo npm install huginn -g</code></pre>
+
+<br />
+<h2>Create a new application</h2>
+<br />
+
+<pre><code>$ huginn create &lt;appname&gt;
+    $ cd &lt;appname&gt;
+    $ huginn build
+    $ huginn serve</code></pre>
+
+<br />
+<h2>Serving Generated Pages</h2>
+<br />
+
+<h4>Local</h4>
+<p>Run huginn locally for testing purposes</p>
+
+<pre><code>$ huginn create &lt;appname&gt;
+    $ huginn build --dev
+    $ huginn serve --dev</code></pre>
+        
+<h4>Server</h4>
+<p>Huginn was designed to create github pages. 
+    The Huginn project github pages were generated with Huginn.
+    Huginn works on Heroku, too. Run npm install in the project folder.
+    An embedded copy of huginn will serve the generated static pages.</p>
+
+<pre><code>$ huginn create &lt;appname&gt;
+    $ cd &lt;appname&gt;
+    $ npm install
+    $ huginn build
+    $ foreman start
+    $ git push heroku master</code></pre>
+
+<br />
+<h2>Usage</h2>
+<br />
+
+<pre><code>Usage:
+    huginn create PATH
+
+    cd PATH
+    huginn build [--drafts]
+    huginn serve
+
+    Options:
+    -b  [--branch]    # branch name subfolder, defaults to master
+    -d  [--drafts]    # publish _drafts folder
+    -h  [--help]      # display this message
+    -p  [--port]      # port to use
+    -v  [--version]   # display version
+
+    --dev             # use config-dev.yml</code></pre>

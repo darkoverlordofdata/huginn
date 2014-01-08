@@ -34,6 +34,7 @@ module.exports =
     if fs.existsSync($path)
       process.exit console.log("ERR: the folder #{$path} already exists.")
 
+    $dest = 'www'
     while ($option = $args.shift())?
 
       switch $option
@@ -134,6 +135,9 @@ module.exports =
         port: 0xd16a
         url: http://#{$project}.com
 
+        serve:
+          - ./#{$dest}
+
         plugins:
           - huginn-asset-bundler
 
@@ -197,6 +201,9 @@ module.exports =
       {path: "#{$path}/readme.md",                        content: $readme}
       {path: "#{$path}/config.yml",                       content: $config}
       {path: "#{$path}/config-dev.yml",                   content: $config_dev}
+      {path: "#{$path}/index.js",                         content: 'index_js'}
+      {path: "#{$path}/package.json",                     content: 'package_json'}
+      {path: "#{$path}/Procfile",                         content: 'procfile'}
       {path: "#{$path}/template/.gitignore",              content: '.gitignore'}
       {path: "#{$path}/template/404.html",                content: '404'}
       {path: "#{$path}/template/CNAME",                   content: "#{$project}.com"}

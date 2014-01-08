@@ -18,7 +18,7 @@ name: dark overlord of data
 description: On, Hekyll! On, Jekyll! On Huginn and Muninn!
 url: http://darkoverlordofdata.com/huginn
 
-source: ./source
+source: ./template
 destination: ../gh-pages
 
 serve:

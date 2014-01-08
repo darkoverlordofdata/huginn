@@ -36,11 +36,9 @@ module.exports =
       layout: default
       ---
       {% for post in site.posts %}
-      {% if loop.first %}
               <h1>{{ post.title }}</h1>
               <p class="muted">{{ post.date | date_to_long_string }}</p>
               {{ post.content }}
-      {% endif %}
       {% endfor %}
     """
 
@@ -125,4 +123,34 @@ module.exports =
       <p>
         "On, Hekyll! On, Jekyll! On Huginn and Muninn!"
       </p>
+    """
+
+  # stuff for Heroku:
+
+  procfile: ->
+    """
+      web: node index.js
+    """
+
+  index_js: ->
+    """
+      require('coffee-script');
+      var huginn = require('huginn');
+      huginn.serve(['--port', process.env.PORT]);
+    """
+
+  package_json: ->
+    """
+      {
+        "name": "yourapp",
+        "description": "Huginn generator templates",
+        "author": "your name <yourname@mail.com>",
+        "dependencies": {
+          "huginn": "0.1.x",
+          "coffee-script": "~1.6.3"
+        },
+        "devDependencies": {
+        },
+        "node": "0.10.x",
+      }
     """
