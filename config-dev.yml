@@ -26,6 +26,7 @@ serve:
   - ./gh-pages
   - ../../darkoverlordofdata.github.io/master
 
+show_errors: true
 #
 #| -------------------------------------------------------------------
 #|  Plugin: Asset Bundler
