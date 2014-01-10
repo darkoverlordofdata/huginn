@@ -1,6 +1,6 @@
 {
   "name": "huginn",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Static blog pages",
   "keywords": [
     "static blog",
@@ -17,10 +17,11 @@
     "coffee-script": "~1.6.3",
     "highlight.js": "~7.5.0",
     "markdown": "~0.5.0",
+    "marked": "~0.3.0",
     "yaml-js": "0.0.8",
-    "huginn-liquid": "0.0.2",
     "huginn-tag-cloud": "0.0.5",
-    "huginn-asset-bundler": "0.0.7"
+    "huginn-asset-bundler": "0.0.7",
+    "huginn-liquid": "0.0.4"
   },
   "scripts": {
     "start": "node ./index.js",
@@ -29,11 +30,7 @@
   "bin": {
     "huginn": "./bin/huginn"
   },
-  "devDependencies": {
-    "chai": "*",
-    "mocha": "*",
-    "async": "*"
-  },
+  "devDependencies": {},
   "repository": "git://github.com/darkoverlordofdata/huginn",
   "main": "index",
   "engines": {

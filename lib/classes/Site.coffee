@@ -18,7 +18,6 @@ yaml = require('yaml-js')
 Page = require('./Page')
 Configuration = require('./Configuration')
 Liquid = require('huginn-liquid')
-markdown = require('markdown').markdown
 
 module.exports = class Site
 
@@ -54,6 +53,19 @@ module.exports = class Site
 
     for $key, $value of $config
       @[$key] = $value unless 'function' is typeof @[$key]
+
+    @markdown = do($marked = @marked) ->
+
+      if $marked?
+        marked = require('marked')
+        ($md) ->
+          marked($md, $marked)
+
+      else
+        markdown = require('markdown').markdown
+        ($md) ->
+          markdown.toHTML($md)
+
 
 
   #
@@ -154,7 +166,7 @@ module.exports = class Site
     #
     if ($ext = path.extname($template)) in @template
       $page = new Page(@, $template, $extra)
-      $page.content = markdown.toHTML($page.content) if $ext in @markdown
+      $page.content = @markdown($page.content) if $ext in ['.md', '.markdown']
 
       $buf = Liquid.Template
       .parse($page.content)

@@ -77,6 +77,15 @@ module.exports =
         port: 0xd16a
         url: http://#{$project}.com
 
+        marked:
+          gfm: true
+          tables: true
+          breaks: false
+          pedantic: false
+          sanitize: true
+          smartLists: true
+          smartypants: false
+
         plugins:
           - huginn-asset-bundler
 
@@ -106,6 +115,15 @@ module.exports =
         serve:
           - ./#{$dest}
           - ../../user_org.github.io/master
+
+        marked:
+          gfm: true
+          tables: true
+          breaks: false
+          pedantic: false
+          sanitize: true
+          smartLists: true
+          smartypants: false
 
         plugins:
           - huginn-asset-bundler
@@ -138,6 +156,15 @@ module.exports =
         serve:
           - ./#{$dest}
 
+        marked:
+          gfm: true
+          tables: true
+          breaks: false
+          pedantic: false
+          sanitize: true
+          smartLists: true
+          smartypants: false
+
         plugins:
           - huginn-asset-bundler
 
@@ -167,6 +194,15 @@ module.exports =
         serve:
           - ./#{$dest}
 
+        marked:
+          gfm: true
+          tables: true
+          breaks: false
+          pedantic: false
+          sanitize: true
+          smartLists: true
+          smartypants: false
+
         plugins:
           - huginn-asset-bundler
 
@@ -185,6 +221,7 @@ module.exports =
 
     for $dir in [
       "#{$path}"
+      "#{$path}/#{$dest}"
       "#{$path}/template"
       "#{$path}/template/_assets"
       "#{$path}/template/_data"

@@ -23,11 +23,11 @@ module.exports = ($site) ->
     file: ''
 
     constructor: ($name, $markup, $tokens) ->
-      super
+      super $name, $markup, $tokens
       [@id, @file] = $markup.split(' ', 2)
 
     render: ($ctx) ->
-      super
+      super $ctx
       if @file.length
         "<script src=\"https://gist.github.com/#{@id}.js?#{@file}\"></script>"
       else

@@ -28,11 +28,11 @@ module.exports = ($site) ->
     url: ''
 
     constructor: ($name, $markup, $tokens) ->
-      super
+      super $name, $markup, $tokens
       @url = $markup.split(' ')[0]
 
     render: ($ctx) ->
-      super
+      super $ctx
       $site.url(@url)
 
   Liquid.Template.registerTag "post_url", PostUrl

@@ -25,10 +25,10 @@ module.exports = ($site) ->
 
     constructor: ($name, $markup, $tokens) ->
       @lang = $markup.split(' ')[0]
-      super
+      super $name, $markup, $tokens
 
     render: ($ctx) ->
-
+      super $ctx
       @code = highlight(@lang, super[0]).value
       "<pre><code class=\"#{@lang}\">#{@code}</code></pre>"
 

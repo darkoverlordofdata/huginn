@@ -21,6 +21,15 @@ url: http://darkoverlordofdata.com/huginn
 source: ./template
 destination: ../gh-pages
 
+marked:
+  gfm: true
+  tables: true
+  breaks: false
+  pedantic: false
+  sanitize: true
+  smartLists: true
+  smartypants: false
+
 serve:
   - ../gh-pages
   - ../../darkoverlordofdata.github.io/master
