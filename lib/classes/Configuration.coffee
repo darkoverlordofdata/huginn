@@ -80,4 +80,7 @@ module.exports = class Configuration
     # Copy settings to the configuration object
     #
     for $key, $value of $config
-      @[$key] = $value
+      if $key in ['template']
+        @[$key] = [].concat(@[$key], $value)
+      else
+        @[$key] = $value

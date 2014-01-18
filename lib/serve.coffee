@@ -25,7 +25,7 @@ module.exports =
 # @param  [Array<String>]  command line args
 # @return none
 #
-  run: ($args = []) ->
+  run: ($args...) ->
 
     $config = new Configuration('--dev' in $args)
     $404 = path.resolve($config.destination, '404.html')
@@ -35,12 +35,21 @@ module.exports =
     else if ($index = $args.indexOf('--port')) isnt -1
       $config.port = parseInt($args[$index+1])
 
+    if ($index = $args.indexOf('-i')) isnt -1
+      $config.ip = $args[$index+1]
+    else if ($index = $args.indexOf('--ip')) isnt -1
+      $config.ip = $args[$index+1]
+
     $app = express()
     $app.set 'port',  $config.port
     $app.use express.favicon()
     $app.use express.logger('dev')
     $app.use express.bodyParser()
     $app.use express.methodOverride()
+    # FB - treat all posts as gets - we only have static responses
+    $app.post '*', ($req, $res, $next) ->
+      $req.method = 'GET'
+      $next()
 
     $root = process.cwd()
     if $config.serve?
@@ -59,7 +68,7 @@ module.exports =
     $app.use ($req, $res, $next) ->
       $res.sendfile $404
 
-    $app.listen $config.port, ->
+    $app.listen $config.port, $config.ip, ->
       console.log "Express server listening on port #{$config.port}"
       console.log "http://localhost:#{$config.port}"
 

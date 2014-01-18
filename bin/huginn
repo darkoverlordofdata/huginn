@@ -38,7 +38,7 @@ switch process.argv[2]
 
   when 'build' then hugin.build process.argv.slice(3)
 
-  when 'serve' then hugin.serve process.argv.slice(3)
+  when 'serve' then hugin.serve process.argv.slice(3)...
 
   when '--version' then console.log "huginn v"+require('../package.json').version
 

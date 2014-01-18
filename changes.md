@@ -14,8 +14,11 @@
     Release
 ##### Version 0.1.1 (1/9/14)
     huginn-liquid 0.0.2
-##### Version 0.1.2 (1/10/15)
+##### Version 0.1.2 (1/10/14)
     add marked optional markdown rendering
     fix super calls in built-in tags
     huginn-liquid 0.0.4
-
+##### Version 0.1.3 (1/16/14)
+    add arg: --ip 'address' - OpenShift compatibility
+    treat post as get - FB compatibility
+    merge config.template values with defaults
