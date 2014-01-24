@@ -181,7 +181,11 @@ module.exports = class Site
         .render(content: $buf, page: $page, site: @, paginator: null)
 
       else $buf
-    else fs.readFileSync($template)
+    else
+      if /.js$/.test $template
+        String(fs.readFileSync($template))
+      else
+        fs.readFileSync($template)
 
   #
   # Generate page

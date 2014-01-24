@@ -1,6 +1,6 @@
 {
   "name": "huginn",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Static blog pages",
   "keywords": [
     "static blog",
@@ -19,9 +19,9 @@
     "markdown": "~0.5.0",
     "marked": "~0.3.0",
     "yaml-js": "0.0.8",
+    "huginn-liquid": "0.0.7",
     "huginn-tag-cloud": "0.0.5",
-    "huginn-asset-bundler": "0.0.8",
-    "huginn-liquid": "0.0.4"
+    "huginn-asset-bundler": "0.0.9"
   },
   "scripts": {
     "start": "node ./index.js",

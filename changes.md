@@ -22,3 +22,7 @@
     add arg: --ip 'address' - OpenShift compatibility
     treat post as get - FB compatibility
     merge config.template values with defaults
+##### Version 0.1.4 (1/16/14)
+    huginn-liquid 0.0.7
+    huginn-tag-cloud 0.0.5
+    huginn-asset-bundler 0.0.9
