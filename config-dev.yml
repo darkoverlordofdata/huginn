@@ -16,7 +16,7 @@
 # Use with huginn serve --dev
 #
 
-name: dark overlord of data
+name: huginn
 description: On, Hekyll! On, Jekyll! On Huginn and Muninn!
 url: http://localhost/
 port: 0xd16a

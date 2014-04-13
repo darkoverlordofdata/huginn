@@ -2,7 +2,7 @@
 #+--------------------------------------------------------------------+
 #| Huginn
 #+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2013
+#| Copyright DarkOverlordOfData (c) 2013 - 2014
 #+--------------------------------------------------------------------+
 #|
 #| This file is a part of Huginn
@@ -12,11 +12,11 @@
 #|
 #+--------------------------------------------------------------------+
 #
-hugin = require("../lib/huginn")
+huginn = require("../lib/huginn")
 
 $usage = """
 Usage:
-  huginn create PATH [-b <name>]
+  huginn create PATH [-b <name>] [-t name | <path>]
 
   cd PATH
   huginn build [--drafts] [--dev]
@@ -26,6 +26,7 @@ Options:
   -b  [--branch]    # branch name subfolder, defaults to master
   -d  [--drafts]    # publish _drafts folder
   -h  [--help]      # display this message
+  -t  [--template]  # new project template, defaults to blog
   -p  [--port]      # port to use
   -v  [--version]   # display version
 
@@ -34,11 +35,11 @@ Options:
 """
 switch process.argv[2]
 
-  when 'create' then hugin.create process.argv.slice(3)...
+  when 'create' then huginn.create process.argv.slice(3)...
 
-  when 'build' then hugin.build process.argv.slice(3)
+  when 'build' then huginn.build process.argv.slice(3)
 
-  when 'serve' then hugin.serve process.argv.slice(3)...
+  when 'serve' then huginn.serve process.argv.slice(3)...
 
   when '--version' then console.log "huginn v"+require('../package.json').version
 
