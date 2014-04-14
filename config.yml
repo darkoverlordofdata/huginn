@@ -30,17 +30,14 @@ marked:
   smartLists: true
   smartypants: false
 
-serve:
-  - ../gh-pages
-  - ../../darkoverlordofdata.github.io/master
 
 plugins:
   - huginn-asset-bundler
 
 asset_bundler:
   compress:
-    js: true
-    css: true
+    js: false
+    css: false
   base_path: /assets/
   shim: /huginn
   server_url: //cdn.darkoverlordofdata.com/
