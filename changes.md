@@ -26,3 +26,8 @@
     huginn-liquid 0.0.7
     huginn-tag-cloud 0.0.5
     huginn-asset-bundler 0.0.9
+##### Version 0.1.5 (7/2/14)
+  Fix:
+    don't require template/_posts
+    don't create assets folder unless specified
+

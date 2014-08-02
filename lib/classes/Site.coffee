@@ -260,11 +260,13 @@ module.exports = class Site
   # @return none
   #
   generatePosts: ($drafts = false) ->
-    for $file in fs.readdirSync("#{@source}/_posts")
-      @generatePost $file
-    if $drafts
+    if fs.existsSync("#{@source}/_posts")
       for $file in fs.readdirSync("#{@source}/_posts")
         @generatePost $file
+      if $drafts
+        for $file in fs.readdirSync("#{@source}/_posts")
+          @generatePost $file
+
 
 
   #

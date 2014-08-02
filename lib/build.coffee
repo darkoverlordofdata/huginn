@@ -70,7 +70,8 @@ module.exports =
     # generate output
     #
     fs.mkdirSync $site.destination unless fs.existsSync($site.destination)
-    fs.mkdirSync "#{$site.destination}/assets" unless fs.existsSync("#{$site.destination}/assets")
+    if fs.existsSync("#{$site.source}/assets")
+      fs.mkdirSync "#{$site.destination}/assets" unless fs.existsSync("#{$site.destination}/assets")
     for $plugin in $plugins
       $plugin $site
     $site.generatePages()

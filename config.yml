@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| config.yml
+#| config-dev.yml
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2013
 #+--------------------------------------------------------------------+
@@ -11,15 +11,22 @@
 #|
 #+--------------------------------------------------------------------+
 #
-# Production configuration
+# Development configuration
+#
+# Use with huginn serve --dev
 #
 
 name: huginn
 description: On, Hekyll! On, Jekyll! On Huginn and Muninn!
-url: http://darkoverlordofdata.com/huginn
-
+url: http://localhost/
+port: 0xd16a
 source: ./template
-destination: ../gh-pages
+destination: ./gh-pages/huginn
+serve:
+  - ./gh-pages
+  - ../../darkoverlordofdata.github.io/master
+
+show_errors: true
 
 marked:
   gfm: true
@@ -30,19 +37,24 @@ marked:
   smartLists: true
   smartypants: false
 
-
+#
+#| -------------------------------------------------------------------
+#|  Plugin: Asset Bundler
+#| -------------------------------------------------------------------
+#|
+#
 plugins:
   - huginn-asset-bundler
 
 asset_bundler:
   compress:
-    js: false
-    css: false
+    js: true
+    css: true
   base_path: /assets/
   shim: /huginn
   server_url: //cdn.darkoverlordofdata.com/
   remove_bundled: false
-  dev: false
+  dev: true
   markup_templates:
     js: "<script type='text/javascript' src='{{url}}'></script>\n"
     css: "<link rel='stylesheet' type='text/css' href='{{url}}' />\n"
